@@ -526,6 +526,44 @@
   }
 
 </style>
+
+  <!-- PWA -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mademoiselle">
+  <meta name="theme-color" content="#1C1814">
+  <script>
+    // Manifest inline
+    const manifestData = {
+  "name": "Mademoiselle Almofadas",
+  "short_name": "Mademoiselle",
+  "description": "Catálogo de produtos Mademoiselle Almofadas",
+  "start_url": "/catalogo/",
+  "display": "standalone",
+  "background_color": "#1C1814",
+  "theme_color": "#1C1814",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://mademoiselle-almofadas.github.io/catalogo/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://mademoiselle-almofadas.github.io/catalogo/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+};
+    const blob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(blob);
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestURL;
+    document.head.appendChild(link);
+  </script>
 </head>
 <body>
 
@@ -548,6 +586,20 @@
   </div>
 </div>
 
+
+<!-- Banner de instalação -->
+<div id="install-banner" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:#1C1814; color:#D4B98A; padding:12px 20px; border-radius:8px;
+  font-family:'Jost',sans-serif; font-size:12px; letter-spacing:.1em;
+  align-items:center; gap:12px; z-index:500; box-shadow:0 4px 20px rgba(0,0,0,.4);
+  white-space:nowrap;">
+  <span>INSTALAR APP NO CELULAR</span>
+  <button onclick="instalarApp()" style="background:#D4B98A; color:#1C1814; border:none;
+    padding:6px 14px; border-radius:4px; font-size:11px; font-weight:500;
+    letter-spacing:.1em; cursor:pointer;">INSTALAR</button>
+  <button onclick="document.getElementById('install-banner').style.display='none'"
+    style="background:none; border:none; color:#9E8E7E; cursor:pointer; font-size:16px;">✕</button>
+</div>
 <!-- Loading screen -->
 <div id="loading-screen">
   <div class="loading-brand"><em>Mademoiselle</em> Almofadas</div>
@@ -806,6 +858,55 @@ if (_logado) {
   carregarPlanilha();
 }
 
+</script>
+
+<script>
+// Service Worker para PWA
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'mademoiselle-v1';
+    self.addEventListener('install', e => {
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(clients.claim());
+    });
+    self.addEventListener('fetch', e => {
+      // Cache apenas recursos estáticos, não a planilha
+      if (e.request.url.includes('docs.google.com') || 
+          e.request.url.includes('drive.google.com')) {
+        return;
+      }
+      e.respondWith(
+        caches.match(e.request).then(cached => {
+          return cached || fetch(e.request).then(response => {
+            return caches.open(CACHE).then(cache => {
+              cache.put(e.request, response.clone());
+              return response;
+            });
+          });
+        })
+      );
+    });
+  `;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  const swURL = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swURL).then(() => {
+    console.log('SW registrado');
+  }).catch(err => console.log('SW erro:', err));
+}
+
+// Banner de instalação
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-banner').style.display = 'flex';
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').style.display = 'none';
+});
 </script>
 </body>
 </html>
