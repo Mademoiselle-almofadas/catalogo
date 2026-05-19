@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Mademoiselle Almofadas</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mademoiselle">
+<meta name="theme-color" content="#1C1814">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#F7F3EE;--warm:#EDE6DC;--gold:#B89B6A;--gold-light:#D4B98A;--dark:#1C1814;--mid:#6B5F52;--soft:#9E8E7E;--white:#FDFAF7}
+html,body{height:100%;background:var(--cream);color:var(--dark);font-family:'Jost',sans-serif;font-weight:300}
+header{background:var(--dark);padding:22px 24px 0;text-align:center;position:sticky;top:0;z-index:100}
+.brand-tag{font-size:9px;font-weight:500;letter-spacing:.28em;color:var(--gold);text-transform:uppercase;margin-bottom:4px}
+.header-logo{display:block;height:70px;width:320px;object-fit:contain;margin:0 auto}
+.abas{display:flex;border-top:1px solid rgba(255,255,255,.08);margin-top:8px}
+.aba-btn{flex:1;background:none;border:none;padding:10px 0;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.aba-btn.ativa{color:var(--gold-light);border-bottom-color:var(--gold)}
+#busca-screen{display:none}
+#busca-screen.ativo{display:block}
+#galeria-screen{display:none}
+#galeria-screen.ativo{display:block}
+.boas-vindas{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 0;max-width:520px;margin:0 auto}
+.bemvindo{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}
+.bemvindo span{color:var(--gold);font-weight:500}
+.sair-btn{background:none;border:none;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);cursor:pointer;text-decoration:underline}
+.search-wrap{padding:20px 20px 12px;max-width:520px;margin:0 auto}
+.search-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--soft);margin-bottom:10px;display:block}
+.search-row{display:flex;gap:10px}
+.search-input{flex:1;background:var(--white);border:1.5px solid var(--warm);border-radius:4px;padding:14px 18px;font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--dark);letter-spacing:.06em;outline:none;-webkit-appearance:none}
+.search-input:focus{border-color:var(--gold)}
+.search-btn{background:var(--dark);border:none;border-radius:4px;padding:0 22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.search-btn svg{width:20px;height:20px;stroke:var(--gold-light);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#status{text-align:center;padding:8px 20px 0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);min-height:22px}
+.divider{display:flex;align-items:center;gap:12px;padding:6px 20px 0;max-width:520px;margin:0 auto}
+.divider-line{flex:1;height:1px;background:var(--warm)}
+.divider-text{font-size:9px;letter-spacing:.18em;color:var(--soft);text-transform:uppercase}
+#grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:16px 16px 40px;max-width:800px;margin:0 auto}
+@media(min-width:600px){#grid{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--white);border-radius:6px;overflow:hidden;box-shadow:0 2px 12px rgba(28,24,20,0.1);cursor:pointer;animation:fadeUp .35s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card-img{aspect-ratio:4/3;background:var(--warm);overflow:hidden;position:relative}
+.card-img img{width:100%;height:100%;object-fit:contain;display:block}
+.card-spin{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.spinner{width:24px;height:24px;border:2px solid var(--warm);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.card-info{padding:10px 12px 12px;border-top:1px solid var(--warm)}
+.card-ref{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--gold);letter-spacing:.08em;display:block;margin-bottom:2px}
+.card-nome{font-size:10px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.empty{grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--soft);font-size:13px}
+#galeria-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;max-width:800px;margin:0 auto}
+@media(min-width:600px){#galeria-grid{grid-template-columns:repeat(4,1fr)}}
+.g-item{background:var(--warm);cursor:pointer}
+.g-img{overflow:hidden;background:var(--warm)}
+.g-img img{width:100%;height:auto;display:block}
+.g-ref{font-family:'Cormorant Garamond',serif;font-size:11px;color:var(--gold);text-align:center;padding:4px 2px 2px;background:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-cor{font-size:10px;color:var(--soft);text-align:center;padding:0 2px 4px;background:var(--white);letter-spacing:.06em}
+#g-sentinel{height:20px}
+#g-status{text-align:center;padding:20px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+#lightbox{display:none;position:fixed;inset:0;background:rgba(28,24,20,.92);z-index:500;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+#lightbox.open{display:flex}
+#lb-img{max-width:100%;max-height:75vh;object-fit:contain;border-radius:4px}
+#lb-ref{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold-light);text-align:center;margin-top:16px}
+#lb-nome{font-size:11px;color:var(--soft);text-align:center;margin-top:4px}
+#lb-close{position:absolute;top:16px;right:20px;background:none;border:none;cursor:pointer;color:var(--soft);font-size:28px;line-height:1}
+#loading-screen{position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;z-index:300;transition:opacity .4s}
+#loading-screen.hidden{opacity:0;pointer-events:none}
+.loading-brand{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--dark);letter-spacing:.1em}
+.loading-brand em{color:var(--gold);font-style:italic}
+.loading-bar-wrap{width:140px;height:2px;background:var(--warm);border-radius:2px;overflow:hidden}
+.loading-bar{height:100%;background:var(--gold);animation:loadBar 1.8s ease forwards}
+@keyframes loadBar{from{width:0}to{width:100%}}
+.loading-txt{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}
+#login-screen{position:fixed;inset:0;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:400;padding:24px;transition:opacity .4s}
+#login-screen.hidden{opacity:0;pointer-events:none}
+.login-logo{display:block;height:90px;width:360px;object-fit:contain;margin:0 auto 40px}
+.login-box{background:var(--cream);border-radius:8px;padding:32px 28px;width:100%;max-width:360px}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);text-align:center;margin-bottom:24px}
+.login-field{margin-bottom:14px}
+.login-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:6px}
+.login-input{width:100%;background:var(--white);border:1.5px solid var(--warm);border-radius:4px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:15px;color:var(--dark);outline:none;-webkit-appearance:none}
+.login-input:focus{border-color:var(--gold)}
+.login-btn{width:100%;background:var(--dark);color:var(--gold-light);border:none;border-radius:4px;padding:14px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;margin-top:8px}
+.login-erro{font-size:11px;color:#c0392b;text-align:center;margin-top:10px;min-height:16px}
+
+.g-filtro-wrap{padding:12px 12px 8px;max-width:800px;margin:0 auto;position:sticky;top:0;background:var(--cream);z-index:10;border-bottom:1px solid var(--warm)}
+.g-filtro-row{display:flex;gap:8px;align-items:center}
+.g-cats{display:flex;gap:6px;padding:10px 12px 0;max-width:800px;margin:0 auto;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.g-cats::-webkit-scrollbar{display:none}
+.g-cat-btn{background:var(--white);color:var(--soft);border:1.5px solid var(--warm);border-radius:20px;padding:6px 14px;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.g-cat-btn.ativo{background:var(--dark);color:var(--gold-light);border-color:var(--dark)}
+.g-filtro-input{flex:1;background:var(--white);border:1.5px solid var(--warm);border-radius:4px;padding:10px 14px;font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--dark);outline:none;-webkit-appearance:none}
+.g-filtro-input:focus{border-color:var(--gold)}
+.g-filtro-clear{background:none;border:none;color:var(--soft);font-size:18px;cursor:pointer;padding:4px 8px;display:none}
+.g-filtro-clear.visible{display:block}
+.g-filtro-info{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--soft);text-align:center;padding:4px 0 0}
+
+
+.card-img{position:relative}
+.g-img{position:relative}
+.btn-add{position:absolute;bottom:6px;right:6px;background:var(--dark);color:var(--gold-light);border:none;border-radius:50%;width:30px;height:30px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;line-height:1}
+#fab{position:fixed;bottom:24px;right:20px;background:var(--dark);color:var(--gold-light);border:none;border-radius:50px;padding:12px 18px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;cursor:pointer;z-index:150;display:none;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+#fab.visivel{display:flex}
+#fab-n{background:var(--gold);color:var(--dark);border-radius:50%;width:20px;height:20px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+#pedido-screen{display:none}
+#pedido-screen.ativo{display:block}
+.ped-header{padding:16px 20px 8px;max-width:800px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.ped-titulo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--dark);letter-spacing:.06em}
+.ped-limpar{background:none;border:none;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);cursor:pointer;text-decoration:underline}
+.ped-lista{max-width:800px;margin:0 auto;padding:0 16px 100px}
+.ped-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--warm)}
+.ped-img{width:56px;height:56px;object-fit:contain;border-radius:4px;background:var(--warm);flex-shrink:0}
+.ped-info{flex:1;min-width:0}
+.ped-ref{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--gold)}
+.ped-nome{font-size:10px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ped-qty{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.qty-btn{background:var(--warm);border:none;border-radius:4px;width:28px;height:28px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--dark)}
+.qty-n{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--dark);min-width:24px;text-align:center}
+.ped-rem{background:none;border:none;color:var(--soft);font-size:18px;cursor:pointer;padding:4px;flex-shrink:0}
+.ped-vazio{text-align:center;padding:60px 20px;font-size:13px;color:var(--soft)}
+.ped-footer{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--warm);padding:12px 20px;z-index:160}
+.ped-footer-inner{max-width:800px;margin:0 auto}
+.btn-email{width:100%;background:var(--dark);color:var(--gold-light);border:none;border-radius:4px;padding:14px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer}
+.lb-add-row{display:flex;align-items:center;gap:12px;margin-top:14px;justify-content:center;position:relative;z-index:501}
+.lb-qty-btn{background:var(--warm);border:none;border-radius:4px;width:40px;height:40px;font-size:22px;cursor:pointer;color:var(--dark);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.lb-qty-n{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--white);min-width:30px;text-align:center}
+.lb-add-btn{background:var(--gold);color:var(--dark);border:none;border-radius:4px;padding:12px 24px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+
+
+
+/* FORMULÁRIO PEDIDO */
+#modal-dados{display:none;position:fixed;inset:0;background:rgba(28,24,20,.7);z-index:600;align-items:center;justify-content:center;padding:20px}
+#modal-dados.open{display:flex}
+.modal-box{background:var(--cream);border-radius:8px;padding:28px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;position:relative;z-index:601}
+.modal-titulo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--dark);letter-spacing:.06em;margin-bottom:20px;text-align:center}
+.modal-field{margin-bottom:14px}
+.modal-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);display:block;margin-bottom:6px}
+.modal-input{width:100%;background:var(--white);border:1.5px solid var(--warm);border-radius:4px;padding:11px 14px;font-family:'Jost',sans-serif;font-size:14px;color:var(--dark);outline:none;-webkit-appearance:none}
+.modal-input:focus{border-color:var(--gold)}
+.modal-btns{display:flex;gap:10px;margin-top:20px}
+.modal-btn-cancel{flex:1;background:var(--white);color:var(--soft);border:1.5px solid var(--warm);border-radius:4px;padding:12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer}
+.modal-btn-ok{flex:2;background:var(--dark);color:var(--gold-light);border:none;border-radius:4px;padding:12px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;pointer-events:all}
+/* HISTÓRICO */
+#historico-screen{display:none}
+#historico-screen.ativo{display:block}
+.hist-header{padding:16px 20px 8px;max-width:800px;margin:0 auto}
+.hist-titulo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--dark);letter-spacing:.06em}
+.hist-lista{max-width:800px;margin:0 auto;padding:0 16px 40px}
+.hist-item{background:var(--white);border-radius:6px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(28,24,20,.06)}
+.hist-num{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:var(--gold);margin-bottom:4px}
+.hist-info{font-size:11px;color:var(--soft);margin-bottom:6px}
+.hist-itens{font-size:11px;color:var(--dark);line-height:1.7;border-top:1px solid var(--warm);padding-top:8px;margin-top:6px}
+.hist-vazio{text-align:center;padding:60px 20px;font-size:13px;color:var(--soft)}
+/* Botão PDF */
+.btn-baixar{width:100%;background:var(--white);color:var(--dark);border:1.5px solid var(--warm);border-radius:4px;padding:14px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer}
+.btn-pdf{width:100%;background:var(--gold);color:var(--dark);border:none;border-radius:4px;padding:14px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;margin-top:10px}
+
+
+.hist-itens-grid{border-top:1px solid var(--warm);margin-top:10px;padding-top:8px}
+.hist-item-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--warm)}
+.hist-item-row:last-child{border-bottom:none}
+.hist-item-img{width:50px;height:50px;object-fit:contain;border-radius:4px;background:var(--warm);flex-shrink:0}
+.hist-item-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.hist-item-ref{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:600;color:var(--gold)}
+.hist-item-nome{font-size:10px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-item-qty{font-size:12px;font-weight:600;color:var(--dark)}
+
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPCEtLSBDcmVhdG9yOiBDb3JlbERSQVcgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2ZXJzaW9uPSIxLjEiIHN0eWxlPSJzaGFwZS1yZW5kZXJpbmc6Z2VvbWV0cmljUHJlY2lzaW9uOyB0ZXh0LXJlbmRlcmluZzpnZW9tZXRyaWNQcmVjaXNpb247IGltYWdlLXJlbmRlcmluZzpvcHRpbWl6ZVF1YWxpdHk7IGZpbGwtcnVsZTpldmVub2RkOyBjbGlwLXJ1bGU6ZXZlbm9kZCIKdmlld0JveD0iLTEwMDAwIDUwMDAgNDMwMDAgMTcwMDAiCiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIKIHhtbG5zOnhvZG09Imh0dHA6Ly93d3cuY29yZWwuY29tL2NvcmVsZHJhdy9vZG0vMjAwMyI+CiA8ZGVmcz4KICA8Zm9udCBpZD0iRm9udElEMCIgaG9yaXotYWR2LXg9IjY0NCIgZm9udC12YXJpYW50PSJub3JtYWwiIHN0eWxlPSJmaWxsLXJ1bGU6bm9uemVybyIgZm9udC13ZWlnaHQ9IjQwMCI+Cgk8Zm9udC1mYWNlIAoJCWZvbnQtZmFtaWx5PSJFYnJpbWEiPgoJCTxmb250LWZhY2Utc3JjPgoJCQk8Zm9udC1mYWNlLW5hbWUgbmFtZT0iRWJyaW1hIi8+CgkJPC9mb250LWZhY2Utc3JjPgoJPC9mb250LWZhY2U+CiAgIDxtaXNzaW5nLWdseXBoPjxwYXRoIGQ9Ik0wIDB6Ii8+PC9taXNzaW5nLWdseXBoPgogICA8Z2x5cGggdW5pY29kZT0iQSIgaG9yaXotYWR2LXg9IjY0NCIgZD0iTTYzNC41MDEgMGwtOTEuMDAxMSAwIC03NC4wMDE1IDE5NiAtMjk3LjgzMyAwIC03MC4xNjU1IC0xOTYgLTkxLjAwMTEgMCAyNjkuMDAzIDcwMCA4NC45OTgyIDAgMjcwLjAwMiAtNzAwem0tMTkxLjY2NiAyNjkuOTk5bC0xMTAuMDAzIDI5OC42NjhjLTMuNjY0NDUsOS42Njc0MyAtNy40OTcxMiwyNS4xNjYzIC0xMS4zMzMxLDQ2LjMzNTFsLTIuMTY3MDEgMGMtMy40OTk1NCwtMTkuNjY4IC03LjMzMjIxLC0zNS4zMzUxIC0xMS40OTgsLTQ3LjAwMTNsLTEwOC44MzUgLTI5OC4wMDIgMjQzLjgzNiAweiIvPgogICA8Z2x5cGggdW5pY29kZT0iRCIgaG9yaXotYWR2LXg9IjcwMSIgZD0iTTkyLjAwMDUgMGwwIDcwMCAxOTMuMTY3IDBjMjQ2LjQ5OCwwIDM2OS44MzMsLTExMy42NjcgMzY5LjgzMywtMzQxLjE2NyAwLC0xMDguMTY2IC0zNC4xNjc1LC0xOTQuODMzIC0xMDIuNjY3LC0yNjAuNDk5IC02OC40OTk5LC02NS40OTg0IC0xNjAuMTY3LC05OC4zMzMzIC0yNzQuOTk5LC05OC4zMzMzbC0xODUuMzM0IDB6bTgyIDYyNi4wMDFsMCAtNTUyIDEwNC4zMzMgMGM5MS42Njc0LDAgMTYzLjAwMSwyNC42NjUgMjE0LjE2OCw3My44MzMzIDUwLjk5ODksNDkuMTY1IDc2LjQ5ODQsMTE4LjgzMyA3Ni40OTg0LDIwOC45OTkgMCwxNzkuNDk5IC05NS4zMzE5LDI2OS4xNjcgLTI4NS44MzQsMjY5LjE2N2wtMTA5LjE2NSAweiIvPgogICA8Z2x5cGggdW5pY29kZT0iRSIgaG9yaXotYWR2LXg9IjUwNSIgZD0iTTQ2My4wMDEgMGwtMzcxIDAgMCA3MDAgMzU1IDAgMCAtNzMuOTk4MiAtMjczIDAgMCAtMjMzLjAwMSAyNTIuOTk5IDAgMCAtNzQuMDAxNSAtMjUyLjk5OSAwIDAgLTI0NC45OTcgMjg5IDAgMCAtNzQuMDAxNXoiLz4KICAgPGdseXBoIHVuaWNvZGU9IkYiIGhvcml6LWFkdi14PSI0ODgiIGQ9Ik00NDcuMDAxIDYyNi4wMDFsLTI3MyAwIDAgLTI0Mi4wMDIgMjUyIDAgMCAtNzMuOTk4MiAtMjUyIDAgMCAtMzEwLjAwMSAtODIgMCAwIDcwMCAzNTUgMCAwIC03My45OTgyeiIvPgogICA8Z2x5cGggdW5pY29kZT0iSSIgaG9yaXotYWR2LXg9IjI2NiIgZD0iTTI0MS45OTkgNzAwbDAgLTcwLjAwMDYgLTY3Ljk5ODUgMCAwIC01NTkuOTk4IDY3Ljk5ODUgMCAwIC03MC4wMDA2IC0yMTggMCAwIDcwLjAwMDYgNjguMDAxOCAwIDAgNTU5Ljk5OCAtNjguMDAxOCAwIDAgNzAuMDAwNiAyMTggMHoiLz4KICAgPGdseXBoIHVuaWNvZGU9IkwiIGhvcml6LWFkdi14PSI0NzAiIGQ9Ik00NTQuOTk5IDBsLTM2Mi45OTkgMCAwIDcwMCA4MiAwIDAgLTYyNS45OTggMjgwLjk5OSAwIDAgLTc0LjAwMTV6Ii8+CiAgIDxnbHlwaCB1bmljb2RlPSJNIiBob3Jpei1hZHYteD0iODk3IiBkPSJNODA2LjAwMiAwbC04Mi4wMDMzIDAgMCA0NjkuNjY3YzAsMzcuMDAwOCAyLjUwMDE0LDgyLjUwMTMgNy4zMzU1LDEzNi4xNjVsLTIuMDAyMDkgMGMtNy44MzAyNSwtMzEuNjY0IC0xNC44MzI2LC01NC4xNjUzIC0yMC45OTcyLC02Ny44MzM2bC0yMzkuMzM0IC01MzcuOTk5IC0zOS45OTg5IDAgLTIzOC44MzYgNTM0LjAwMWMtNi44MzA4NiwxNS42NjcxIC0xMy44MzMyLDM5LjQ5NzYgLTIxLjAwMDUsNzEuODMxMmwtMS45OTg3OSAwYzIuNTAwMTQsLTI3Ljk5OTYgMy44MzI2NywtNzMuODMzMyAzLjgzMjY3LC0xMzcuMTY1bDAgLTQ2OC42NjcgLTc4Ljk5ODUgMCAwIDcwMCAxMDguMzM0IDAgMjE0LjY2NiAtNDg4LjE2N2MxNi42NjY1LC0zNy4zMzM5IDI3LjMzMzMsLTY1LjMzMzUgMzIuMzMzNiwtODMuOTk4OGwyLjgzMzI3IDBjMTMuOTk4MSwzOC40OTgyIDI1LjE2NjMsNjcuMTY3NCAzMy42NjYxLDg2LjAwMDlsMjE5LjE2OCA0ODYuMTY1IDEwMyAwIDAgLTcwMHoiLz4KICAgPGdseXBoIHVuaWNvZGU9Ik8iIGhvcml6LWFkdi14PSI3NTMiIGQ9Ik0zNzMuOTk5IC0xMS45OTk0Yy05OS4xNjQ1LDAgLTE3OC42NjQsMzIuNjY2NyAtMjM4LjMzMSw5OC4xNjUxIC01OS44MzUxLDY1LjUwMTcgLTg5LjY2ODYsMTUwLjY2OCAtODkuNjY4NiwyNTUuNTAyIDAsMTEyLjY2NSAzMC41MDMsMjAyLjY2NiA5MS4zMzQzLDI2OS42NjYgNjAuODM0NSw2Ny4xNjc0IDE0My42NjYsMTAwLjY2NSAyNDguNSwxMDAuNjY1IDk2LjY2NzcsMCAxNzQuNTAyLC0zMi40OTg1IDIzMy40OTksLTk3LjY2NzEgNTkuMTY4OSwtNjUuMTY1MyA4OC42NjkyLC0xNTAuMzMyIDg4LjY2OTIsLTI1NS40OTkgMCwtMTE0LjMzNCAtMzAuMzM0OCwtMjA0LjY2NSAtOTAuODM2MiwtMjcxLjE2NiAtNjAuNDk4MSwtNjYuNTAxMSAtMTQxLjQ5OSwtOTkuNjY1OSAtMjQzLjE2NywtOTkuNjY1OXptNi4wMDI5OCA2NTBjLTczLjY2ODQsMCAtMTMzLjMzNSwtMjYuNTAyMSAtMTc5LjE2OSwtNzkuNjY4MSAtNDUuODMzNywtNTMuMDAxIC02OC44MzMsLTEyMi44MzMgLTY4LjgzMywtMjA4Ljk5OSAwLC04Ni4zMzQgMjIuMzMzLC0xNTUuODMzIDY3LjE2NzQsLTIwOC41MDEgNDQuNjY2MSwtNTIuNDk5NiAxMDMsLTc4LjgzMzYgMTc0LjgzMiwtNzguODMzNiA3Ni44MzQ4LDAgMTM3LjMzNiwyNS4wMDE0IDE4MS42NjksNzUuMTY5MSA0NC4xNjQ3LDUwLjE2NDQgNjYuMzMyOSwxMjAuMzMzIDY2LjMzMjksMjEwLjY2NSAwLDkyLjUwMTkgLTIxLjUwMTksMTY0IC02NC40OTksMjE0LjUwMSAtNDIuODM1NSw1MC41MDA5IC0xMDIuMTY5LDc1LjY2NzIgLTE3Ny41LDc1LjY2NzJ6Ii8+CiAgIDxnbHlwaCB1bmljb2RlPSJTIiBob3Jpei1hZHYteD0iNTMxIiBkPSJNNTkuMDAwNyAyNy45OTk2bDAgOTcuMDAwOGMxMSwtOS44MzIzNSAyNC4zMzE4LC0xOC41MDA0IDM5LjgzNCwtMjYuMzMzOSAxNS4zMzA3LC03LjgzMzU1IDMxLjY2NCwtMTQuNDk5NSA0OC42NjM3LC0xOS44MzI5IDE3LjE2NzgsLTUuMzMzNDEgMzQuMTY3NSwtOS40OTkyMSA1MS41MDAyLC0xMi41MDA3IDE3LjE2NzgsLTIuODMzMjcgMzMuMTY4MSwtNC4zMzQwMiA0Ny44MzU4LC00LjMzNDAyIDUwLjMzMjYsMCA4Ny45OTk3LDkuMzM0MyAxMTIuODMzLDI3Ljk5OTYgMjQuODMzMiwxOC42Njg2IDM3LjMzMzksNDUuNjY4OCAzNy4zMzM5LDgwLjY2NzUgMCwxOS4wMDE3IC00LjE2OTEsMzUuMzM1MSAtMTIuNTAwNyw0OS4zMzMyIC04LjE2NjY4LDE0LjAwMTQgLTE5LjY2OCwyNi44MzUzIC0zNC4zMzI0LDM4LjMzMzMgLTE0LjY2NzcsMTEuNjY2MiAtMzIuMDAwNSwyMi42NjYyIC01Mi4wMDE2LDMzLjMzMyAtMjAuMDAxMSwxMC41MDE5IC00MS40OTk3LDIxLjY2NjggLTY0LjQ5OSwzMy4zMzMgLTI0LjUwMDEsMTIuNTAwNyAtNDcuMTY2MiwyNS4wMDE0IC02OC4zMzUsMzcuNjY3IC0yMS4xNjU0LDEyLjY2ODkgLTM5LjQ5NzYsMjYuNjY3MSAtNTUuMTY0Nyw0Mi4wMDEgLTE1LjUwMjIsMTUuMzM0IC0yNy44MzQ3LDMyLjY2NjcgLTM2LjgzNTgsNTIuMDAxNiAtOC44MzI5NSwxOS40OTk4IC0xMy4zMzE5LDQyLjE2NiAtMTMuMzMxOSw2OC4xNjY4IDAsMzEuOTk3MiA2Ljk5OTA3LDU5LjY2MzYgMjEuMDAwNSw4My4zMzI1IDEzLjk5ODEsMjMuNjY1NiAzMi4zMzM2LDQzLjE2NTMgNTUuMTY0Nyw1OC4zMzExIDIyLjgzNDQsMTUuMzM0IDQ4LjY2NywyNi44MzUzIDc3LjgzNDIsMzQuMzM1NyAyOS4xNjcyLDcuNTAwNDIgNTguODMyNSwxMS4xNjQ5IDg5LjE2NzMsMTEuMTY0OSA2OS4wMDEyLDAgMTE5LjMzNCwtOC4zMzE2IDE1MC44MzMsLTI0Ljk5ODFsMCAtOTIuMDAwNWMtNDEuMzMxNSwyOC42NjU5IC05NC4zMzI1LDQzLjAwMDQgLTE1OS4xNjgsNDMuMDAwNCAtMTcuODMwOCwwIC0zNS42NjQ5LC0xLjgzMzg4IC01My42NjQsLTUuNjY2NTQgLTE3LjgzNDEsLTMuNjY3NzUgLTMzLjgzNDQsLTkuODM1NjQgLTQ3LjgzNTgsLTE4LjMzNTUgLTEzLjk5ODEsLTguNDk5ODIgLTI1LjMzMTIsLTE5LjQ5OTggLTM0LjE2NDIsLTMyLjgzMTcgLTguODMyOTUsLTEzLjMzNTIgLTEzLjE2NywtMjkuNjY4NiAtMTMuMTY3LC00OS4wMDAxIDAsLTE3LjgzNDEgMy4zMzEzMiwtMzMuMzMzIDEwLjAwMDYsLTQ2LjMzNTEgNi42NjU5NCwtMTIuOTk4NyAxNi40OTgzLC0yNC45OTgxIDI5LjQ5NywtMzUuNjY0OSAxMy4wMDIsLTEwLjgzNSAyOC44MzQxLC0yMS4xNjU0IDQ3LjUwMjcsLTMxLjMzNDIgMTguNjY1MywtMTAuMDAwNiA0MC4zMzIxLC0yMS4xNjU0IDY0LjY2MzksLTMzLjE2NDggMjUuMDAxNCwtMTIuMzM1OCA0OC44MzUyLC0yNS4zMzQ1IDcxLjE2ODIsLTM5LjE2NzggMjIuNTAxMywtMTMuNjY4MyA0Mi4xNjYsLTI4LjY2NTkgNTkuMDAwNywtNDUuMzMyNCAxNi45OTk2LC0xNi42NjY1IDMwLjMzMTUsLTM1LjAwMiA0MC4zMzIxLC01NS4xNjggOS44MzIzNSwtMjAuMTY2IDE0LjgzMjYsLTQzLjMzMzYgMTQuODMyNiwtNjkuNDk5MyAwLC0zNC41MDA2IC02LjY2NTk0LC02My42Njc4IC0yMC4xNjYsLTg3LjY2NjUgLTEzLjUwMDEsLTIzLjgzMzggLTMxLjgzMjMsLTQzLjMzMzYgLTU0LjY2NjcsLTU4LjMzNDQgLTIyLjk5OTMsLTE1LjAwMDggLTQ5LjQ5ODIsLTI1LjgzMjYgLTc5LjMzMTYsLTMyLjQ5ODUgLTMwLjAwMTcsLTYuNjY5MjQgLTYxLjUwMDgsLTEwLjAwMDYgLTk0LjY2ODksLTEwLjAwMDYgLTExLDAgLTI0LjY2NSwwLjgzMTE4MSAtNDAuOTk4MywyLjY2NTA2IC0xNi4zMzM0LDEuODMzODggLTMyLjgzNSw0LjMzNDAyIC00OS44MzQ2LDcuODMzNTUgLTE2LjgzMTQsMy4zMzQ2MiAtMzIuODMxNyw3LjY2ODY0IC00OC4wMDA3LDEyLjY2ODkgLTE1LjE2NTgsNC45OTY5OCAtMjcuMTY1MSwxMC42NjM1IC0zNi4zMzEyLDE2LjgzMTR6Ii8+CiAgPC9mb250PgogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgIDwhW0NEQVRBWwogICAgQGZvbnQtZmFjZSB7IGZvbnQtZmFtaWx5OiJFYnJpbWEiO2ZvbnQtdmFyaWFudDpub3JtYWw7Zm9udC13ZWlnaHQ6bm9ybWFsO3NyYzp1cmwoIiNGb250SUQwIikgZm9ybWF0KHN2Zyl9CiAgICAuc3RyMCB7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjMwMDtzdHJva2UtbWl0ZXJsaW1pdDoyMi45MjU2fQogICAgLmZpbDAge2ZpbGw6bm9uZX0KICAgIC5maWwxIHtmaWxsOiNGRkZGRkZ9CiAgICAuZm50MCB7Zm9udC13ZWlnaHQ6bm9ybWFsO2ZvbnQtc2l6ZTozMDMxLjgzcHg7Zm9udC1mYW1pbHk6J0VicmltYSd9CiAgIF1dPgogIDwvc3R5bGU+CiA8L2RlZnM+CiA8ZyBpZD0iQ2FtYWRhX3gwMDIwXzEiPgogIDxtZXRhZGF0YSBpZD0iQ29yZWxDb3JwSURfMENvcmVsLUxheWVyIi8+CiAgPHBhdGggY2xhc3M9ImZpbDAgc3RyMCIgZD0iTTEwMzk4LjM3IDEwMjA0Ljg0bC04MTMuNjkgMTA2MC41OCAtMjc1Ny4yNSAtMzU3OS40Mm0wIDY3MTkuOTdsMCAtODg4NC4xMSAzNTcwLjk0IDQ2ODIuOTggMzU4OC4xMiAtNDY4OC4yMyAxOS45IDg4NTIuMjgiLz4KICA8dGV4dCB4PSItOTY2Ni40OCIgeT0iMTk1MTQuNDQiICBjbGFzcz0iZmlsMSBmbnQwIj5NQURFTU9JU0VMTEUgQUxNT0ZBREFTPC90ZXh0PgogPC9nPgo8L3N2Zz4K" alt="Mademoiselle Almofadas" class="login-logo">
+  <div class="login-box">
+    <div class="login-title">Acesso Restrito</div>
+    <div class="login-field">
+      <label class="login-label">Usuário</label>
+      <input type="text" id="inp-u" class="login-input" placeholder="rep01" autocapitalize="none">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Senha</label>
+      <input type="password" id="inp-s" class="login-input" placeholder="••••••••">
+    </div>
+    <button class="login-btn" id="btn-entrar">Entrar</button>
+    <div class="login-erro" id="login-erro"></div>
+  </div>
+</div>
+
+<div id="loading-screen">
+  <div class="loading-brand"><em>Mademoiselle</em> Almofadas</div>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+  <div class="loading-txt">Carregando catálogo…</div>
+</div>
+
+<header>
+  <div class="brand-tag">Catálogo de Produtos</div>
+  <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPCEtLSBDcmVhdG9yOiBDb3JlbERSQVcgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2ZXJzaW9uPSIxLjEiIHN0eWxlPSJzaGFwZS1yZW5kZXJpbmc6Z2VvbWV0cmljUHJlY2lzaW9uOyB0ZXh0LXJlbmRlcmluZzpnZW9tZXRyaWNQcmVjaXNpb247IGltYWdlLXJlbmRlcmluZzpvcHRpbWl6ZVF1YWxpdHk7IGZpbGwtcnVsZTpldmVub2RkOyBjbGlwLXJ1bGU6ZXZlbm9kZCIKdmlld0JveD0iLTEwMDAwIDUwMDAgNDMwMDAgMTcwMDAiCiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIKIHhtbG5zOnhvZG09Imh0dHA6Ly93d3cuY29yZWwuY29tL2NvcmVsZHJhdy9vZG0vMjAwMyI+CiA8ZGVmcz4KICA8Zm9udCBpZD0iRm9udElEMCIgaG9yaXotYWR2LXg9IjY0NCIgZm9udC12YXJpYW50PSJub3JtYWwiIHN0eWxlPSJmaWxsLXJ1bGU6bm9uemVybyIgZm9udC13ZWlnaHQ9IjQwMCI+Cgk8Zm9udC1mYWNlIAoJCWZvbnQtZmFtaWx5PSJFYnJpbWEiPgoJCTxmb250LWZhY2Utc3JjPgoJCQk8Zm9udC1mYWNlLW5hbWUgbmFtZT0iRWJyaW1hIi8+CgkJPC9mb250LWZhY2Utc3JjPgoJPC9mb250LWZhY2U+CiAgIDxtaXNzaW5nLWdseXBoPjxwYXRoIGQ9Ik0wIDB6Ii8+PC9taXNzaW5nLWdseXBoPgogICA8Z2x5cGggdW5pY29kZT0iQSIgaG9yaXotYWR2LXg9IjY0NCIgZD0iTTYzNC41MDEgMGwtOTEuMDAxMSAwIC03NC4wMDE1IDE5NiAtMjk3LjgzMyAwIC03MC4xNjU1IC0xOTYgLTkxLjAwMTEgMCAyNjkuMDAzIDcwMCA4NC45OTgyIDAgMjcwLjAwMiAtNzAwem0tMTkxLjY2NiAyNjkuOTk5bC0xMTAuMDAzIDI5OC42NjhjLTMuNjY0NDUsOS42Njc0MyAtNy40OTcxMiwyNS4xNjYzIC0xMS4zMzMxLDQ2LjMzNTFsLTIuMTY3MDEgMGMtMy40OTk1NCwtMTkuNjY4IC03LjMzMjIxLC0zNS4zMzUxIC0xMS40OTgsLTQ3LjAwMTNsLTEwOC44MzUgLTI5OC4wMDIgMjQzLjgzNiAweiIvPgogICA8Z2x5cGggdW5pY29kZT0iRCIgaG9yaXotYWR2LXg9IjcwMSIgZD0iTTkyLjAwMDUgMGwwIDcwMCAxOTMuMTY3IDBjMjQ2LjQ5OCwwIDM2OS44MzMsLTExMy42NjcgMzY5LjgzMywtMzQxLjE2NyAwLC0xMDguMTY2IC0zNC4xNjc1LC0xOTQuODMzIC0xMDIuNjY3LC0yNjAuNDk5IC02OC40OTk5LC02NS40OTg0IC0xNjAuMTY3LC05OC4zMzMzIC0yNzQuOTk5LC05OC4zMzMzbC0xODUuMzM0IDB6bTgyIDYyNi4wMDFsMCAtNTUyIDEwNC4zMzMgMGM5MS42Njc0LDAgMTYzLjAwMSwyNC42NjUgMjE0LjE2OCw3My44MzMzIDUwLjk5ODksNDkuMTY1IDc2LjQ5ODQsMTE4LjgzMyA3Ni40OTg0LDIwOC45OTkgMCwxNzkuNDk5IC05NS4zMzE5LDI2OS4xNjcgLTI4NS44MzQsMjY5LjE2N2wtMTA5LjE2NSAweiIvPgogICA8Z2x5cGggdW5pY29kZT0iRSIgaG9yaXotYWR2LXg9IjUwNSIgZD0iTTQ2My4wMDEgMGwtMzcxIDAgMCA3MDAgMzU1IDAgMCAtNzMuOTk4MiAtMjczIDAgMCAtMjMzLjAwMSAyNTIuOTk5IDAgMCAtNzQuMDAxNSAtMjUyLjk5OSAwIDAgLTI0NC45OTcgMjg5IDAgMCAtNzQuMDAxNXoiLz4KICAgPGdseXBoIHVuaWNvZGU9IkYiIGhvcml6LWFkdi14PSI0ODgiIGQ9Ik00NDcuMDAxIDYyNi4wMDFsLTI3MyAwIDAgLTI0Mi4wMDIgMjUyIDAgMCAtNzMuOTk4MiAtMjUyIDAgMCAtMzEwLjAwMSAtODIgMCAwIDcwMCAzNTUgMCAwIC03My45OTgyeiIvPgogICA8Z2x5cGggdW5pY29kZT0iSSIgaG9yaXotYWR2LXg9IjI2NiIgZD0iTTI0MS45OTkgNzAwbDAgLTcwLjAwMDYgLTY3Ljk5ODUgMCAwIC01NTkuOTk4IDY3Ljk5ODUgMCAwIC03MC4wMDA2IC0yMTggMCAwIDcwLjAwMDYgNjguMDAxOCAwIDAgNTU5Ljk5OCAtNjguMDAxOCAwIDAgNzAuMDAwNiAyMTggMHoiLz4KICAgPGdseXBoIHVuaWNvZGU9IkwiIGhvcml6LWFkdi14PSI0NzAiIGQ9Ik00NTQuOTk5IDBsLTM2Mi45OTkgMCAwIDcwMCA4MiAwIDAgLTYyNS45OTggMjgwLjk5OSAwIDAgLTc0LjAwMTV6Ii8+CiAgIDxnbHlwaCB1bmljb2RlPSJNIiBob3Jpei1hZHYteD0iODk3IiBkPSJNODA2LjAwMiAwbC04Mi4wMDMzIDAgMCA0NjkuNjY3YzAsMzcuMDAwOCAyLjUwMDE0LDgyLjUwMTMgNy4zMzU1LDEzNi4xNjVsLTIuMDAyMDkgMGMtNy44MzAyNSwtMzEuNjY0IC0xNC44MzI2LC01NC4xNjUzIC0yMC45OTcyLC02Ny44MzM2bC0yMzkuMzM0IC01MzcuOTk5IC0zOS45OTg5IDAgLTIzOC44MzYgNTM0LjAwMWMtNi44MzA4NiwxNS42NjcxIC0xMy44MzMyLDM5LjQ5NzYgLTIxLjAwMDUsNzEuODMxMmwtMS45OTg3OSAwYzIuNTAwMTQsLTI3Ljk5OTYgMy44MzI2NywtNzMuODMzMyAzLjgzMjY3LC0xMzcuMTY1bDAgLTQ2OC42NjcgLTc4Ljk5ODUgMCAwIDcwMCAxMDguMzM0IDAgMjE0LjY2NiAtNDg4LjE2N2MxNi42NjY1LC0zNy4zMzM5IDI3LjMzMzMsLTY1LjMzMzUgMzIuMzMzNiwtODMuOTk4OGwyLjgzMzI3IDBjMTMuOTk4MSwzOC40OTgyIDI1LjE2NjMsNjcuMTY3NCAzMy42NjYxLDg2LjAwMDlsMjE5LjE2OCA0ODYuMTY1IDEwMyAwIDAgLTcwMHoiLz4KICAgPGdseXBoIHVuaWNvZGU9Ik8iIGhvcml6LWFkdi14PSI3NTMiIGQ9Ik0zNzMuOTk5IC0xMS45OTk0Yy05OS4xNjQ1LDAgLTE3OC42NjQsMzIuNjY2NyAtMjM4LjMzMSw5OC4xNjUxIC01OS44MzUxLDY1LjUwMTcgLTg5LjY2ODYsMTUwLjY2OCAtODkuNjY4NiwyNTUuNTAyIDAsMTEyLjY2NSAzMC41MDMsMjAyLjY2NiA5MS4zMzQzLDI2OS42NjYgNjAuODM0NSw2Ny4xNjc0IDE0My42NjYsMTAwLjY2NSAyNDguNSwxMDAuNjY1IDk2LjY2NzcsMCAxNzQuNTAyLC0zMi40OTg1IDIzMy40OTksLTk3LjY2NzEgNTkuMTY4OSwtNjUuMTY1MyA4OC42NjkyLC0xNTAuMzMyIDg4LjY2OTIsLTI1NS40OTkgMCwtMTE0LjMzNCAtMzAuMzM0OCwtMjA0LjY2NSAtOTAuODM2MiwtMjcxLjE2NiAtNjAuNDk4MSwtNjYuNTAxMSAtMTQxLjQ5OSwtOTkuNjY1OSAtMjQzLjE2NywtOTkuNjY1OXptNi4wMDI5OCA2NTBjLTczLjY2ODQsMCAtMTMzLjMzNSwtMjYuNTAyMSAtMTc5LjE2OSwtNzkuNjY4MSAtNDUuODMzNywtNTMuMDAxIC02OC44MzMsLTEyMi44MzMgLTY4LjgzMywtMjA4Ljk5OSAwLC04Ni4zMzQgMjIuMzMzLC0xNTUuODMzIDY3LjE2NzQsLTIwOC41MDEgNDQuNjY2MSwtNTIuNDk5NiAxMDMsLTc4LjgzMzYgMTc0LjgzMiwtNzguODMzNiA3Ni44MzQ4LDAgMTM3LjMzNiwyNS4wMDE0IDE4MS42NjksNzUuMTY5MSA0NC4xNjQ3LDUwLjE2NDQgNjYuMzMyOSwxMjAuMzMzIDY2LjMzMjksMjEwLjY2NSAwLDkyLjUwMTkgLTIxLjUwMTksMTY0IC02NC40OTksMjE0LjUwMSAtNDIuODM1NSw1MC41MDA5IC0xMDIuMTY5LDc1LjY2NzIgLTE3Ny41LDc1LjY2NzJ6Ii8+CiAgIDxnbHlwaCB1bmljb2RlPSJTIiBob3Jpei1hZHYteD0iNTMxIiBkPSJNNTkuMDAwNyAyNy45OTk2bDAgOTcuMDAwOGMxMSwtOS44MzIzNSAyNC4zMzE4LC0xOC41MDA0IDM5LjgzNCwtMjYuMzMzOSAxNS4zMzA3LC03LjgzMzU1IDMxLjY2NCwtMTQuNDk5NSA0OC42NjM3LC0xOS44MzI5IDE3LjE2NzgsLTUuMzMzNDEgMzQuMTY3NSwtOS40OTkyMSA1MS41MDAyLC0xMi41MDA3IDE3LjE2NzgsLTIuODMzMjcgMzMuMTY4MSwtNC4zMzQwMiA0Ny44MzU4LC00LjMzNDAyIDUwLjMzMjYsMCA4Ny45OTk3LDkuMzM0MyAxMTIuODMzLDI3Ljk5OTYgMjQuODMzMiwxOC42Njg2IDM3LjMzMzksNDUuNjY4OCAzNy4zMzM5LDgwLjY2NzUgMCwxOS4wMDE3IC00LjE2OTEsMzUuMzM1MSAtMTIuNTAwNyw0OS4zMzMyIC04LjE2NjY4LDE0LjAwMTQgLTE5LjY2OCwyNi44MzUzIC0zNC4zMzI0LDM4LjMzMzMgLTE0LjY2NzcsMTEuNjY2MiAtMzIuMDAwNSwyMi42NjYyIC01Mi4wMDE2LDMzLjMzMyAtMjAuMDAxMSwxMC41MDE5IC00MS40OTk3LDIxLjY2NjggLTY0LjQ5OSwzMy4zMzMgLTI0LjUwMDEsMTIuNTAwNyAtNDcuMTY2MiwyNS4wMDE0IC02OC4zMzUsMzcuNjY3IC0yMS4xNjU0LDEyLjY2ODkgLTM5LjQ5NzYsMjYuNjY3MSAtNTUuMTY0Nyw0Mi4wMDEgLTE1LjUwMjIsMTUuMzM0IC0yNy44MzQ3LDMyLjY2NjcgLTM2LjgzNTgsNTIuMDAxNiAtOC44MzI5NSwxOS40OTk4IC0xMy4zMzE5LDQyLjE2NiAtMTMuMzMxOSw2OC4xNjY4IDAsMzEuOTk3MiA2Ljk5OTA3LDU5LjY2MzYgMjEuMDAwNSw4My4zMzI1IDEzLjk5ODEsMjMuNjY1NiAzMi4zMzM2LDQzLjE2NTMgNTUuMTY0Nyw1OC4zMzExIDIyLjgzNDQsMTUuMzM0IDQ4LjY2NywyNi44MzUzIDc3LjgzNDIsMzQuMzM1NyAyOS4xNjcyLDcuNTAwNDIgNTguODMyNSwxMS4xNjQ5IDg5LjE2NzMsMTEuMTY0OSA2OS4wMDEyLDAgMTE5LjMzNCwtOC4zMzE2IDE1MC44MzMsLTI0Ljk5ODFsMCAtOTIuMDAwNWMtNDEuMzMxNSwyOC42NjU5IC05NC4zMzI1LDQzLjAwMDQgLTE1OS4xNjgsNDMuMDAwNCAtMTcuODMwOCwwIC0zNS42NjQ5LC0xLjgzMzg4IC01My42NjQsLTUuNjY2NTQgLTE3LjgzNDEsLTMuNjY3NzUgLTMzLjgzNDQsLTkuODM1NjQgLTQ3LjgzNTgsLTE4LjMzNTUgLTEzLjk5ODEsLTguNDk5ODIgLTI1LjMzMTIsLTE5LjQ5OTggLTM0LjE2NDIsLTMyLjgzMTcgLTguODMyOTUsLTEzLjMzNTIgLTEzLjE2NywtMjkuNjY4NiAtMTMuMTY3LC00OS4wMDAxIDAsLTE3LjgzNDEgMy4zMzEzMiwtMzMuMzMzIDEwLjAwMDYsLTQ2LjMzNTEgNi42NjU5NCwtMTIuOTk4NyAxNi40OTgzLC0yNC45OTgxIDI5LjQ5NywtMzUuNjY0OSAxMy4wMDIsLTEwLjgzNSAyOC44MzQxLC0yMS4xNjU0IDQ3LjUwMjcsLTMxLjMzNDIgMTguNjY1MywtMTAuMDAwNiA0MC4zMzIxLC0yMS4xNjU0IDY0LjY2MzksLTMzLjE2NDggMjUuMDAxNCwtMTIuMzM1OCA0OC44MzUyLC0yNS4zMzQ1IDcxLjE2ODIsLTM5LjE2NzggMjIuNTAxMywtMTMuNjY4MyA0Mi4xNjYsLTI4LjY2NTkgNTkuMDAwNywtNDUuMzMyNCAxNi45OTk2LC0xNi42NjY1IDMwLjMzMTUsLTM1LjAwMiA0MC4zMzIxLC01NS4xNjggOS44MzIzNSwtMjAuMTY2IDE0LjgzMjYsLTQzLjMzMzYgMTQuODMyNiwtNjkuNDk5MyAwLC0zNC41MDA2IC02LjY2NTk0LC02My42Njc4IC0yMC4xNjYsLTg3LjY2NjUgLTEzLjUwMDEsLTIzLjgzMzggLTMxLjgzMjMsLTQzLjMzMzYgLTU0LjY2NjcsLTU4LjMzNDQgLTIyLjk5OTMsLTE1LjAwMDggLTQ5LjQ5ODIsLTI1LjgzMjYgLTc5LjMzMTYsLTMyLjQ5ODUgLTMwLjAwMTcsLTYuNjY5MjQgLTYxLjUwMDgsLTEwLjAwMDYgLTk0LjY2ODksLTEwLjAwMDYgLTExLDAgLTI0LjY2NSwwLjgzMTE4MSAtNDAuOTk4MywyLjY2NTA2IC0xNi4zMzM0LDEuODMzODggLTMyLjgzNSw0LjMzNDAyIC00OS44MzQ2LDcuODMzNTUgLTE2LjgzMTQsMy4zMzQ2MiAtMzIuODMxNyw3LjY2ODY0IC00OC4wMDA3LDEyLjY2ODkgLTE1LjE2NTgsNC45OTY5OCAtMjcuMTY1MSwxMC42NjM1IC0zNi4zMzEyLDE2LjgzMTR6Ii8+CiAgPC9mb250PgogIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CiAgIDwhW0NEQVRBWwogICAgQGZvbnQtZmFjZSB7IGZvbnQtZmFtaWx5OiJFYnJpbWEiO2ZvbnQtdmFyaWFudDpub3JtYWw7Zm9udC13ZWlnaHQ6bm9ybWFsO3NyYzp1cmwoIiNGb250SUQwIikgZm9ybWF0KHN2Zyl9CiAgICAuc3RyMCB7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjMwMDtzdHJva2UtbWl0ZXJsaW1pdDoyMi45MjU2fQogICAgLmZpbDAge2ZpbGw6bm9uZX0KICAgIC5maWwxIHtmaWxsOiNGRkZGRkZ9CiAgICAuZm50MCB7Zm9udC13ZWlnaHQ6bm9ybWFsO2ZvbnQtc2l6ZTozMDMxLjgzcHg7Zm9udC1mYW1pbHk6J0VicmltYSd9CiAgIF1dPgogIDwvc3R5bGU+CiA8L2RlZnM+CiA8ZyBpZD0iQ2FtYWRhX3gwMDIwXzEiPgogIDxtZXRhZGF0YSBpZD0iQ29yZWxDb3JwSURfMENvcmVsLUxheWVyIi8+CiAgPHBhdGggY2xhc3M9ImZpbDAgc3RyMCIgZD0iTTEwMzk4LjM3IDEwMjA0Ljg0bC04MTMuNjkgMTA2MC41OCAtMjc1Ny4yNSAtMzU3OS40Mm0wIDY3MTkuOTdsMCAtODg4NC4xMSAzNTcwLjk0IDQ2ODIuOTggMzU4OC4xMiAtNDY4OC4yMyAxOS45IDg4NTIuMjgiLz4KICA8dGV4dCB4PSItOTY2Ni40OCIgeT0iMTk1MTQuNDQiICBjbGFzcz0iZmlsMSBmbnQwIj5NQURFTU9JU0VMTEUgQUxNT0ZBREFTPC90ZXh0PgogPC9nPgo8L3N2Zz4K" alt="Mademoiselle Almofadas" class="header-logo">
+  <div class="abas">
+    <button class="aba-btn ativa" id="aba-b">Buscar</button>
+    <button class="aba-btn" id="aba-g">Galeria</button>
+    <button class="aba-btn" id="aba-p">Pedido</button>
+    <button class="aba-btn" id="aba-h">Histórico de Pedidos</button>
+  </div>
+</header>
+
+<div id="busca-screen" class="ativo">
+  <div class="boas-vindas">
+    <div class="bemvindo" id="bemvindo"></div>
+    <button class="sair-btn" id="btn-sair">Sair</button>
+  </div>
+  <div class="search-wrap">
+    <span class="search-label">Buscar por referência</span>
+    <div class="search-row">
+      <input type="text" id="search-input" class="search-input" placeholder="076 / 9999 / NT38" maxlength="6" autocapitalize="characters">
+      <button class="search-btn" id="btn-buscar">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="status"></div>
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-text" id="div-label">Resultados</div>
+    <div class="divider-line"></div>
+  </div>
+  <div id="grid"></div>
+</div>
+
+<div id="galeria-screen">
+  <div class="g-filtro-wrap">
+    <div class="g-cats">
+      <button class="g-cat-btn ativo" id="cat-tudo">Tudo</button>
+      <button class="g-cat-btn" id="cat-natal">&#127876; Natal</button>
+      <button class="g-cat-btn" id="cat-trico">&#129523; Trico</button>
+      <button class="g-cat-btn" id="cat-alm-lisa">Almofadas Lisas</button>
+      <button class="g-cat-btn" id="cat-rin-lisa">Rineiras Lisas</button>
+    </div>
+    <div class="g-filtro-row" style="margin-top:8px">
+      <input type="text" id="g-filtro" class="g-filtro-input" placeholder="076 / 9999 / NT38" maxlength="6" autocapitalize="characters">
+      <button class="g-filtro-clear" id="g-filtro-clear">&#x2715;</button>
+    </div>
+    <div class="g-filtro-info" id="g-filtro-info"></div>
+  </div>
+
+  <div id="galeria-grid"></div>
+  <div id="g-sentinel"></div>
+  <div id="g-status"></div>
+</div>
+
+
+<div id="pedido-screen">
+  <div class="ped-header">
+    <div class="ped-titulo">Meu Pedido</div>
+    <button class="ped-limpar" id="btn-limpar">Limpar tudo</button>
+  </div>
+  <div class="ped-lista" id="ped-lista"></div>
+  <div class="ped-footer">
+    <div class="ped-footer-inner">
+      <button class="btn-pdf" id="btn-pdf" onclick="abrirModalDados()" style="margin-bottom:8px">&#128196; Gerar PDF e Enviar</button>
+      <button class="btn-baixar" onclick="baixarPedido()">&#11015; Baixar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<div id="fab" onclick="mudarAba('p')">
+  <span>Pedido</span>
+  <span id="fab-n">0</span>
+</div>
+
+
+    <div style="font-size:12px;color:var(--soft);letter-spacing:.1em;text-transform:uppercase;text-align:center;margin-bottom:8px">Mademoiselle Almofadas</div>
+    
+  </div>
+</div>
+
+
+<div id="modal-dados">
+  <div class="modal-box">
+    <div class="modal-titulo">Dados do Pedido</div>
+    <div class="modal-field">
+      <label class="modal-label">CNPJ</label>
+      <input type="text" id="inp-cnpj" class="modal-input" placeholder="00.000.000/0000-00">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Razão Social</label>
+      <input type="text" id="inp-razao" class="modal-input" placeholder="Nome da empresa">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Endereço de Entrega</label>
+      <input type="text" id="inp-endereco" class="modal-input" placeholder="Rua, número, cidade - UF">
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" onclick="document.getElementById('modal-dados').classList.remove('open')">Cancelar</button>
+      <button class="modal-btn-ok" onclick="confirmarModal()">Gerar PDF e Enviar</button>
+    </div>
+  </div>
+</div>
+
+<div id="historico-screen">
+  <div class="hist-header">
+    <div class="hist-titulo">Histórico de Pedidos</div>
+  </div>
+  <div class="hist-lista" id="hist-lista"></div>
+</div>
+
+<div id="lightbox" onclick="if(event.target===this)fecharLB()">
+  <button id="lb-close" onclick="fecharLB()" style="position:absolute;top:16px;right:20px;background:none;border:none;cursor:pointer;color:#9E8E7E;font-size:32px;line-height:1;z-index:502;padding:8px">&#x2715;</button>
+  <img id="lb-img" src="" alt="" style="max-width:100%;max-height:65vh;object-fit:contain;border-radius:4px">
+  <div id="lb-ref" style="font-family:'Cormorant Garamond',serif;font-size:22px;color:#D4B98A;text-align:center;margin-top:12px"></div>
+  <div id="lb-nome" style="font-size:11px;color:#9E8E7E;text-align:center;margin-top:4px"></div>
+  <div style="display:flex;align-items:center;gap:16px;margin-top:16px;justify-content:center;position:relative;z-index:502">
+    <button onclick="lbQty=Math.max(1,lbQty-1);document.getElementById('lb-qty').textContent=lbQty" style="background:#EDE6DC;border:none;border-radius:4px;width:44px;height:44px;font-size:24px;cursor:pointer;color:#1C1814;-webkit-tap-highlight-color:transparent">&#8722;</button>
+    <span id="lb-qty" style="font-family:'Cormorant Garamond',serif;font-size:24px;color:#fff;min-width:36px;text-align:center">1</span>
+    <button onclick="lbQty++;document.getElementById('lb-qty').textContent=lbQty" style="background:#EDE6DC;border:none;border-radius:4px;width:44px;height:44px;font-size:24px;cursor:pointer;color:#1C1814;-webkit-tap-highlight-color:transparent">&#43;</button>
+    <button onclick="if(lbItem){addItem(lbItem,lbQty);fecharLB()}" style="background:#B89B6A;color:#1C1814;border:none;border-radius:4px;padding:12px 24px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent">+ Adicionar</button>
+  </div>
+</div>
+
+<script>
+var SHEET_ID = "12D8u5zgYokftP_tEKnF1Dkw9zrfyUUJZED_v7DvFdI8";
+var USERS = [
+  {u:"emerson", s:"0000", n:"Emerson - RJ"},
+  {u:"fba",     s:"0000", n:"FBA - SC"},
+  {u:"leandro", s:"0000", n:"Leandro - PR"},
+  {u:"mauricio",s:"0000", n:"Mauricio - SP"},
+  {u:"lu",      s:"0000", n:"Lu - RS"},
+  {u:"keila",   s:"0000", n:"Keila - SP"}
+];
+var dados = [];
+var galPag = 0, galAtiva = false, galLoad = false;
+var GAL_N = 30;
+
+function loginOk(rep) {
+  sessionStorage.setItem("rep", JSON.stringify(rep));
+  document.getElementById("login-screen").classList.add("hidden");
+  document.getElementById("bemvindo").innerHTML = "Ola, <span>" + rep.n + "</span>";
+  carregarPlanilha();
+}
+
+function fazerLogin() {
+  var u = document.getElementById("inp-u").value.trim().toLowerCase();
+  var s = document.getElementById("inp-s").value.trim();
+  var rep = null;
+  for (var i = 0; i < USERS.length; i++) {
+    if (USERS[i].u === u && USERS[i].s === s) { rep = USERS[i]; break; }
+  }
+  if (rep) {
+    loginOk(rep);
+  } else {
+    document.getElementById("login-erro").textContent = "Usuario ou senha incorretos";
+    setTimeout(function() { document.getElementById("login-erro").textContent = ""; }, 3000);
+  }
+}
+
+document.getElementById("btn-entrar").addEventListener("click", fazerLogin);
+document.getElementById("inp-s").addEventListener("keydown", function(e) { if (e.key === "Enter") fazerLogin(); });
+document.getElementById("inp-u").addEventListener("keydown", function(e) { if (e.key === "Enter") document.getElementById("inp-s").focus(); });
+document.getElementById("btn-sair").addEventListener("click", function() { sessionStorage.removeItem("rep"); location.reload(); });
+
+var saved = sessionStorage.getItem("rep");
+if (saved) { loginOk(JSON.parse(saved)); }
+
+async function carregarPlanilha() {
+  try {
+    var url = "https://docs.google.com/spreadsheets/d/" + SHEET_ID + "/gviz/tq?tqx=out:json&sheet=Sheet1";
+    var res = await fetch(url);
+    var txt = await res.text();
+    var json = JSON.parse(txt.substring(47).slice(0, -2));
+    var rows = json.table.rows;
+    dados = [];
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (!r.c || !r.c[1] || !r.c[1].v) continue;
+      var nome = (r.c[2] && r.c[2].v) ? String(r.c[2].v).trim() : (r.c[3] && r.c[3].v) ? String(r.c[3].v).trim() : "";
+      var ref = "";
+      if (r.c[0] && r.c[0].v !== null && r.c[0].v !== undefined) {
+        ref = String(r.c[0].f || r.c[0].v).trim();
+      } else if (nome) {
+        ref = nome.split("-")[0].replace(/\.[^/.]+$/, "").trim();
+      }
+      var link = String(r.c[1].v).trim().replace("uc?export=view&id=", "thumbnail?sz=w800&id=");
+      if (ref && link) dados.push({ref: ref, link: link, nome: nome});
+    }
+    document.getElementById("loading-screen").classList.add("hidden");
+    document.getElementById("status").textContent = dados.length + " fotos carregadas";
+    setTimeout(function() { document.getElementById("status").textContent = ""; }, 2500);
+  } catch(e) {
+    document.getElementById("loading-screen").classList.add("hidden");
+    document.getElementById("status").textContent = "Erro ao carregar";
+  }
+}
+
+document.getElementById("aba-b").addEventListener("click", function() { mudarAba("b"); });
+document.getElementById("aba-p").addEventListener("click", function() { mudarAba("p"); });
+document.getElementById("aba-h").addEventListener("click", function() { mudarAba("h"); });
+document.getElementById("aba-g").addEventListener("click", function() { mudarAba("g"); });
+
+function mudarAba(aba) {
+  document.getElementById("aba-b").classList.toggle("ativa", aba === "b");
+  document.getElementById("aba-g").classList.toggle("ativa", aba === "g");
+  document.getElementById("aba-p").classList.toggle("ativa", aba === "p");
+  document.getElementById("aba-h").classList.toggle("ativa", aba === "h");
+  document.getElementById("busca-screen").classList.toggle("ativo", aba === "b");
+  document.getElementById("galeria-screen").classList.toggle("ativo", aba === "g");
+  document.getElementById("pedido-screen").classList.toggle("ativo", aba === "p");
+  document.getElementById("historico-screen").classList.toggle("ativo", aba === "h");
+  if (aba === "g" && !galAtiva) { galAtiva = true; if (dados.length > 0) { dados = ordenarDados(dados); carregarGaleria(); } }
+  if (aba === "p") renderPedido();
+  if (aba === "h") renderHistorico();
+}
+
+document.getElementById("btn-buscar").addEventListener("click", buscar);
+document.getElementById("search-input").addEventListener("keydown", function(e) { if (e.key === "Enter") buscar(); });
+
+function buscar() {
+  var q = document.getElementById("search-input").value.trim();
+  var grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  if (!q) { document.getElementById("status").textContent = "Digite uma referencia"; return; }
+  var qB = q.toUpperCase().replace(/R$/, "");
+  var qN = parseInt(qB, 10) || null;
+  var res = dados.filter(function(d) {
+    var r = String(d.ref).toUpperCase().replace(/R$/, "");
+    var m = String(d.nome).toUpperCase().split("-")[0].replace(/R$/, "");
+    if (qN !== null) return parseInt(r, 10) === qN || parseInt(m, 10) === qN;
+    return r === qB || m === qB;
+  });
+  document.getElementById("div-label").textContent = res.length + (res.length === 1 ? " variacao encontrada" : " variacoes encontradas");
+  if (res.length === 0) {
+    var el = document.createElement("div");
+    el.className = "empty";
+    el.textContent = "Referencia nao encontrada";
+    grid.appendChild(el);
+    return;
+  }
+  res.forEach(function(item, i) {
+    var card = document.createElement("div");
+    card.className = "card";
+    card.style.animationDelay = (i * 0.06) + "s";
+    var wrap = document.createElement("div");
+    wrap.className = "card-img";
+    var spin = document.createElement("div");
+    spin.className = "card-spin";
+    var sp = document.createElement("div");
+    sp.className = "spinner";
+    spin.appendChild(sp);
+    var img = document.createElement("img");
+    img.src = item.link;
+    img.alt = item.ref;
+    img.loading = "lazy";
+    img.onload = function() { spin.style.display = "none"; };
+    img.onerror = function() { spin.style.display = "none"; img.style.display = "none"; };
+    wrap.appendChild(spin);
+    wrap.appendChild(img);
+    var info = document.createElement("div");
+    info.className = "card-info";
+    var refEl = document.createElement("span");
+    refEl.className = "card-ref";
+    refEl.textContent = item.ref;
+    var nomeEl = document.createElement("span");
+    nomeEl.className = "card-nome";
+    nomeEl.textContent = item.nome;
+    info.appendChild(refEl);
+    info.appendChild(nomeEl);
+    card.appendChild(wrap);
+    card.appendChild(info);
+    card.addEventListener("click", function() { abrirLB(item); });
+    grid.appendChild(card);
+  });
+}
+
+function carregarGaleria() {
+  if (galLoad) return;
+  if (filtroAtivo) return;
+  var fonte = dados;
+  var ini = galPag * GAL_N;
+  if (ini >= fonte.length) { document.getElementById("g-status").textContent = fonte.length + " produtos"; return; }
+  galLoad = true;
+  var fatia = fonte.slice(ini, ini + GAL_N);
+  var grid = document.getElementById("galeria-grid");
+  fatia.forEach(function(item) {
+    var div = document.createElement("div");
+    div.className = "g-item";
+    var wrap = document.createElement("div");
+    wrap.className = "g-img";
+    var img = document.createElement("img");
+    img.src = item.link;
+    img.alt = item.ref;
+    img.loading = "lazy";
+    var gBtn = document.createElement("button");
+    gBtn.className = "btn-add";
+    gBtn.textContent = "+";
+    gBtn.addEventListener("click", (function(it){ return function(e){ e.stopPropagation(); addItem(it,1); }; })(item));
+    wrap.appendChild(img);
+    wrap.appendChild(gBtn);
+    var ref = document.createElement("div");
+    ref.className = "g-ref";
+    ref.textContent = item.ref;
+    div.appendChild(wrap);
+    div.appendChild(ref);
+    div.addEventListener("click", (function(it){ return function(){ abrirLB(it); }; })(item));
+    grid.appendChild(div);
+  });
+  galPag++;
+  galLoad = false;
+}
+
+
+// FILTRO GALERIA
+var dadosFiltrados = [];
+var filtroAtivo = false;
+
+function ordenarDados(arr) {
+  return arr.slice().sort(function(a, b) {
+    var rA = String(a.ref).toUpperCase();
+    var rB = String(b.ref).toUpperCase();
+    var isNtA = rA.indexOf("NT") === 0 || rA.indexOf("9999") === 0 || rA.indexOf("9993") === 0 || rA.indexOf("9997") === 0;
+    var isNtB = rB.indexOf("NT") === 0 || rB.indexOf("9999") === 0 || rB.indexOf("9993") === 0 || rB.indexOf("9997") === 0;
+    // 9999 e NT vão para o final
+    if (isNtA && !isNtB) return 1;
+    if (!isNtA && isNtB) return -1;
+    // demais: ordem decrescente pelo número
+    var nA = parseInt(rA.replace(/[^0-9]/g, ""), 10) || 0;
+    var nB = parseInt(rB.replace(/[^0-9]/g, ""), 10) || 0;
+    return nB - nA;
+  });
+}
+
+var catAtual = "tudo";
+
+function ativarCategoria(cat) {
+  catAtual = cat;
+  document.getElementById("cat-tudo").classList.toggle("ativo", cat === "tudo");
+  document.getElementById("cat-natal").classList.toggle("ativo", cat === "natal");
+  document.getElementById("cat-trico").classList.toggle("ativo", cat === "trico");
+  document.getElementById("cat-alm-lisa").classList.toggle("ativo", cat === "alm-lisa");
+  document.getElementById("cat-rin-lisa").classList.toggle("ativo", cat === "rin-lisa");
+  document.getElementById("g-filtro").value = "";
+  document.getElementById("g-filtro-clear").classList.remove("visible");
+  var grid = document.getElementById("galeria-grid");
+  grid.innerHTML = "";
+  galPag = 0;
+  galLoad = false;
+
+  if (cat === "tudo") {
+    filtroAtivo = false;
+    dadosFiltrados = [];
+    galPag = 0;
+    galLoad = false;
+    document.getElementById("galeria-grid").innerHTML = "";
+    document.getElementById("g-filtro-info").textContent = "";
+    if (dados.length > 0) carregarGaleria();
+  } else if (cat === "natal") {
+    dadosFiltrados = dados.filter(function(d) {
+      return String(d.ref).toUpperCase().indexOf("NT") === 0;
+    });
+    filtroAtivo = true;
+    document.getElementById("g-filtro-info").textContent = dadosFiltrados.length + " produtos Natal";
+    renderFiltrados();
+  } else if (cat === "trico") {
+    dadosFiltrados = dados.filter(function(d) {
+      var r = String(d.ref).toUpperCase();
+      return r.indexOf("ALM") === 0 || r.indexOf("RIN") === 0 || r.indexOf("MT") === 0 || r.indexOf("PS") === 0;
+    });
+    filtroAtivo = true;
+    document.getElementById("g-filtro-info").textContent = dadosFiltrados.length + " produtos Trico";
+    renderFiltrados();
+  } else if (cat === "alm-lisa") {
+    dadosFiltrados = dados.filter(function(d) {
+      var r = String(d.ref).toUpperCase().replace(/R$/, "");
+      var n = parseInt(r, 10);
+      return n === 9999 || n === 9993;
+    });
+    filtroAtivo = true;
+    document.getElementById("g-filtro-info").textContent = dadosFiltrados.length + " Almofadas Lisas";
+    renderFiltrados();
+  } else if (cat === "rin-lisa") {
+    dadosFiltrados = dados.filter(function(d) {
+      var r = String(d.ref).toUpperCase().replace(/R$/, "");
+      var n = parseInt(r, 10);
+      return n === 9997;
+    });
+    filtroAtivo = true;
+    document.getElementById("g-filtro-info").textContent = dadosFiltrados.length + " Rineiras Lisas";
+    renderFiltrados();
+  }
+}
+
+document.getElementById("cat-tudo").addEventListener("click", function() { ativarCategoria("tudo"); });
+document.getElementById("cat-natal").addEventListener("click", function() { ativarCategoria("natal"); });
+document.getElementById("cat-trico").addEventListener("click", function() { ativarCategoria("trico"); });
+document.getElementById("cat-alm-lisa").addEventListener("click", function() { ativarCategoria("alm-lisa"); });
+document.getElementById("cat-rin-lisa").addEventListener("click", function() { ativarCategoria("rin-lisa"); });
+
+document.getElementById("g-filtro").addEventListener("input", function() {
+  var q = this.value.trim();
+  document.getElementById("g-filtro-clear").classList.toggle("visible", q.length > 0);
+  catAtual = "";
+  document.getElementById("cat-tudo").classList.remove("ativo");
+  document.getElementById("cat-natal").classList.remove("ativo");
+  document.getElementById("cat-trico").classList.remove("ativo");
+  document.getElementById("cat-alm-lisa").classList.remove("ativo");
+  document.getElementById("cat-rin-lisa").classList.remove("ativo");
+  filtrarGaleria(q);
+});
+
+document.getElementById("g-filtro-clear").addEventListener("click", function() {
+  document.getElementById("g-filtro").value = "";
+  this.classList.remove("visible");
+  filtrarGaleria("");
+});
+
+var TRICO_PREFIXOS = ["ALM", "RIN", "MT", "PS"];
+
+function isTricoPrefixo(q) {
+  var qU = q.toUpperCase();
+  for (var i = 0; i < TRICO_PREFIXOS.length; i++) {
+    if (TRICO_PREFIXOS[i] === qU || TRICO_PREFIXOS[i].indexOf(qU) === 0 || qU.indexOf(TRICO_PREFIXOS[i]) === 0) {
+      return TRICO_PREFIXOS[i];
+    }
+  }
+  return null;
+}
+
+function filtrarGaleria(q) {
+  var grid = document.getElementById("galeria-grid");
+  grid.innerHTML = "";
+  galPag = 0;
+  galLoad = false;
+  if (!q) {
+    filtroAtivo = false;
+    dadosFiltrados = [];
+    document.getElementById("g-filtro-info").textContent = "";
+    if (dados.length > 0) carregarGaleria();
+    return;
+  }
+  var qU = q.toUpperCase();
+  var prefixo = isTricoPrefixo(qU);
+
+  if (prefixo) {
+    // Busca por prefixo Tricô — mostra todos que começam com esse prefixo
+    dadosFiltrados = dados.filter(function(d) {
+      return String(d.ref).toUpperCase().indexOf(prefixo) === 0;
+    });
+    filtroAtivo = true;
+    document.getElementById("g-filtro-info").textContent = dadosFiltrados.length + " produtos " + prefixo;
+    renderFiltrados();
+    return;
+  }
+
+  var qB = qU.replace(/R$/, "");
+  var qN = parseInt(qB, 10) || null;
+  dadosFiltrados = dados.filter(function(d) {
+    var r = String(d.ref).toUpperCase().replace(/R$/, "");
+    var m = String(d.nome).toUpperCase().split("-")[0].replace(/R$/, "");
+    if (qN !== null) return parseInt(r, 10) === qN || parseInt(m, 10) === qN;
+    return r === qB || m === qB;
+  });
+  filtroAtivo = true;
+  document.getElementById("g-filtro-info").textContent = dadosFiltrados.length + (dadosFiltrados.length === 1 ? " variacao encontrada" : " variacoes encontradas");
+  renderFiltrados();
+}
+
+function isTrico(ref) {
+  var r = String(ref).toUpperCase();
+  return r.indexOf("ALM") === 0 || r.indexOf("RIN") === 0 || r.indexOf("MT") === 0 || r.indexOf("PS") === 0;
+}
+
+function getCorTrico(nome) {
+  var partes = String(nome).split("-");
+  if (partes.length >= 2) {
+    var cor = partes[1].replace(/\.[^/.]+$/, "").trim();
+    return cor;
+  }
+  return "";
+}
+
+function renderFiltrados() {
+  var grid = document.getElementById("galeria-grid");
+  dadosFiltrados.forEach(function(item) {
+    var div = document.createElement("div");
+    div.className = "g-item";
+    var wrap = document.createElement("div");
+    wrap.className = "g-img";
+    var img = document.createElement("img");
+    img.src = item.link;
+    img.alt = item.ref;
+    img.loading = "lazy";
+    wrap.appendChild(img);
+    var ref = document.createElement("div");
+    ref.className = "g-ref";
+    ref.textContent = item.ref;
+    div.appendChild(wrap);
+    div.appendChild(ref);
+    if (isTrico(item.ref)) {
+      var cor = getCorTrico(item.nome);
+      if (cor) {
+        var corEl = document.createElement("div");
+        corEl.className = "g-cor";
+        corEl.textContent = "Cor: " + cor;
+        div.appendChild(corEl);
+      }
+    }
+    div.addEventListener("click", function() { abrirLB(item); });
+    grid.appendChild(div);
+  });
+}
+
+
+// ── CARRINHO ──
+var carrinho = [];
+var lbItem = null;
+var lbQty = 1;
+
+function fabAtualizar() {
+  var total = carrinho.reduce(function(s,i){ return s+i.qty; }, 0);
+  document.getElementById("fab-n").textContent = total;
+  document.getElementById("fab").classList.toggle("visivel", total > 0);
+}
+
+function addItem(item, qty) {
+  qty = qty || 1;
+  var idx = -1;
+  for (var i=0; i<carrinho.length; i++) { if (carrinho[i].nome === item.nome) { idx=i; break; } }
+  if (idx >= 0) { carrinho[idx].qty += qty; } else { carrinho.push({ref:item.ref, nome:item.nome, link:item.link, qty:qty}); }
+  fabAtualizar();
+  var fab = document.getElementById("fab");
+  fab.style.background = "var(--gold)"; fab.style.color = "var(--dark)";
+  setTimeout(function(){ fab.style.background = "var(--dark)"; fab.style.color = "var(--gold-light)"; }, 500);
+}
+
+function renderPedido() {
+  var lista = document.getElementById("ped-lista");
+  lista.innerHTML = "";
+  if (carrinho.length === 0) {
+    lista.innerHTML = "<div class='ped-vazio'>Nenhum item adicionado ainda</div>";
+    return;
+  }
+  carrinho.forEach(function(item, idx) {
+    var div = document.createElement("div");
+    div.className = "ped-item";
+    var img = document.createElement("img");
+    img.src = item.link; img.className = "ped-img"; img.alt = item.ref;
+    var info = document.createElement("div"); info.className = "ped-info";
+    var ref = document.createElement("div"); ref.className = "ped-ref"; ref.textContent = item.ref;
+    var nome = document.createElement("div"); nome.className = "ped-nome"; nome.textContent = item.nome;
+    info.appendChild(ref); info.appendChild(nome);
+    var qty = document.createElement("div"); qty.className = "ped-qty";
+    var menos = document.createElement("button"); menos.className = "qty-btn"; menos.textContent = "-";
+    menos.addEventListener("click", (function(i){ return function(){
+      if(carrinho[i].qty>1){carrinho[i].qty--;}else{carrinho.splice(i,1);}
+      fabAtualizar(); renderPedido();
+    };})(idx));
+    var num = document.createElement("span"); num.className = "qty-n"; num.textContent = item.qty;
+    var mais = document.createElement("button"); mais.className = "qty-btn"; mais.textContent = "+";
+    mais.addEventListener("click", (function(i){ return function(){ carrinho[i].qty++; fabAtualizar(); renderPedido(); };})(idx));
+    qty.appendChild(menos); qty.appendChild(num); qty.appendChild(mais);
+    var rem = document.createElement("button"); rem.className = "ped-rem"; rem.textContent = "✕";
+    rem.addEventListener("click", (function(i){ return function(){ carrinho.splice(i,1); fabAtualizar(); renderPedido(); };})(idx));
+    div.appendChild(img); div.appendChild(info); div.appendChild(qty); div.appendChild(rem);
+    lista.appendChild(div);
+  });
+}
+
+document.getElementById("btn-limpar").addEventListener("click", function(){
+  if(carrinho.length===0) return;
+  carrinho=[]; fabAtualizar(); renderPedido();
+});
+// Lightbox qty
+// botoes lb usam onclick inline
+
+
+// HISTÓRICO LOCAL
+function salvarHistorico(pedido) {
+  var rep = JSON.parse(sessionStorage.getItem("rep")||"{}");
+  var chave = "hist_" + (rep.u||"x");
+  try {
+    var hist = JSON.parse(localStorage.getItem(chave)||"[]");
+    hist.unshift(pedido);
+    if (hist.length > 50) hist = hist.slice(0,50);
+    localStorage.setItem(chave, JSON.stringify(hist));
+  } catch(e) {}
+}
+
+async function renderHistorico() {
+  var rep = JSON.parse(sessionStorage.getItem("rep")||"{}");
+  var lista = document.getElementById("hist-lista");
+  lista.innerHTML = "<div class='hist-vazio'>Carregando...</div>";
+
+  try {
+    var url = "https://script.google.com/macros/s/AKfycbzr2dz4H0NdiCd4y_svwvlRhv0k3xz0xiRVg_OiQLn3eyusaVRTrHTEXAxbY-7D_b4D/exec?rep=" + encodeURIComponent(rep.n||"");
+    var res = await fetch(url, {redirect:"follow"});
+    var json = await res.json();
+
+    lista.innerHTML = "";
+
+    if (!json.ok || !json.pedidos || json.pedidos.length === 0) {
+      lista.innerHTML = "<div class='hist-vazio'>Nenhum pedido realizado ainda</div>";
+      return;
+    }
+
+    json.pedidos.forEach(function(p) {
+      var div = document.createElement("div");
+      div.className = "hist-item";
+
+      var header = document.createElement("div");
+      header.className = "hist-num";
+      header.textContent = p.numero + " — " + p.data + " " + p.hora;
+
+      var info = document.createElement("div");
+      info.className = "hist-info";
+      info.innerHTML =
+        "<strong>" + (p.razao||"") + "</strong><br>" +
+        "CNPJ: " + (p.cnpj||"") + "<br>" +
+        "Entrega: " + (p.endereco||"") + "<br>" +
+        "Rep: " + (p.rep||"") + "<br>" +
+        "Total: <strong>" + (p.total||0) + " unidades</strong>";
+
+      div.appendChild(header);
+      div.appendChild(info);
+
+      // Itens com mini fotos
+      if (p.itens && p.itens.length > 0) {
+        var itensDiv = document.createElement("div");
+        itensDiv.className = "hist-itens-grid";
+        p.itens.forEach(function(item) {
+          var row = document.createElement("div");
+          row.className = "hist-item-row";
+          var img = document.createElement("img");
+          img.src = String(item.link||"").replace("uc?export=view&id=","thumbnail?sz=w200&id=");
+          img.className = "hist-item-img";
+          img.alt = item.ref;
+          var info2 = document.createElement("div");
+          info2.className = "hist-item-info";
+          var ref = document.createElement("span");
+          ref.className = "hist-item-ref";
+          ref.textContent = item.ref;
+          var nome = document.createElement("span");
+          nome.className = "hist-item-nome";
+          nome.textContent = item.nome;
+          var qty = document.createElement("span");
+          qty.className = "hist-item-qty";
+          qty.textContent = item.qty + " un";
+          info2.appendChild(ref);
+          info2.appendChild(nome);
+          info2.appendChild(qty);
+          row.appendChild(img);
+          row.appendChild(info2);
+          itensDiv.appendChild(row);
+        });
+        div.appendChild(itensDiv);
+      }
+
+      lista.appendChild(div);
+    });
+
+  } catch(e) {
+    lista.innerHTML = "<div class='hist-vazio'>Erro ao carregar historico</div>";
+  }
+}
+
+// MODAL
+function abrirModalDados() {
+  if (carrinho.length === 0) { alert("Nenhum item no pedido!"); return; }
+  document.getElementById("inp-cnpj").value = "";
+  document.getElementById("inp-razao").value = "";
+  document.getElementById("inp-endereco").value = "";
+  document.getElementById("modal-dados").classList.add("open");
+}
+
+function confirmarModal() {
+  var cnpj = document.getElementById("inp-cnpj").value.trim();
+  var razao = document.getElementById("inp-razao").value.trim();
+  var end = document.getElementById("inp-endereco").value.trim();
+  if (!cnpj || !razao || !end) { alert("Preencha todos os campos!"); return; }
+  document.getElementById("modal-dados").classList.remove("open");
+  gerarPDFeEnviar(cnpj, razao, end);
+}
+
+// PDF
+async function gerarPDFeEnviar(cnpj, razao, endereco) {
+  var rep = JSON.parse(sessionStorage.getItem("rep")||"{}");
+  var btn = document.getElementById("btn-pdf");
+  btn.textContent = "Gerando...";
+  btn.disabled = true;
+
+  var payload = {
+    representante: rep.n||"",
+    cnpj: cnpj, razao: razao, endereco: endereco,
+    itens: carrinho.map(function(i){ return {ref:i.ref, nome:i.nome, link:i.link, qty:i.qty}; })
+  };
+
+  // Abre janela ANTES do fetch para não ser bloqueado pelo mobile
+  var win = window.open("","_blank");
+  if (win) {
+    win.document.write("<html><body style='font-family:Arial;text-align:center;padding:40px;color:#1C1814'><p style='color:#B89B6A;font-size:18px'>Gerando pedido...</p></body></html>");
+  }
+
+  var numPedido = "PED-???";
+  try {
+    var res = await fetch("https://script.google.com/macros/s/AKfycbzr2dz4H0NdiCd4y_svwvlRhv0k3xz0xiRVg_OiQLn3eyusaVRTrHTEXAxbY-7D_b4D/exec", {
+      method: "POST",
+      headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify(payload),
+      redirect: "follow"
+    });
+    var json = await res.json();
+    if (json.ok) numPedido = json.pedido;
+  } catch(e) {}
+
+  var agora = new Date();
+  var dataStr = agora.toLocaleDateString("pt-BR") + " " + agora.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  var total = carrinho.reduce(function(s,i){return s+i.qty;},0);
+  var itensStr = carrinho.map(function(i){ return i.ref+" | "+i.nome+" | "+i.qty+" un"; }).join("\n");
+
+  salvarHistorico({
+    numero:numPedido, data:dataStr, cnpj:cnpj, razao:razao,
+    endereco:endereco, total:total, itensStr:itensStr,
+    itens: carrinho.map(function(i){ return {ref:i.ref, nome:i.nome, link:i.link, qty:i.qty}; })
+  });
+
+  var logoSrc = "";
+  var logoEl = document.querySelector(".header-logo");
+  if (logoEl) logoSrc = logoEl.src;
+
+  var itensHTML = carrinho.map(function(item) {
+    return "<tr><td style='padding:8px;border-bottom:1px solid #EDE6DC;text-align:center'><img src='" + item.link + "' style='width:60px;height:60px;object-fit:contain;border-radius:4px'></td>" +
+      "<td style='padding:8px;border-bottom:1px solid #EDE6DC;font-family:Georgia,serif;font-size:13px;color:#B89B6A;font-weight:bold'>" + item.ref + "</td>" +
+      "<td style='padding:8px;border-bottom:1px solid #EDE6DC;font-size:11px;color:#6B5F52'>" + item.nome + "</td>" +
+      "<td style='padding:8px;border-bottom:1px solid #EDE6DC;font-size:13px;text-align:center;font-weight:500'>" + item.qty + " un</td></tr>";
+  }).join("");
+
+  var pdfHTML = "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Pedido " + numPedido + "</title>" +
+    "<style>body{font-family:Arial,sans-serif;margin:0;padding:20px;color:#1C1814}" +
+    ".hd{text-align:center;border-bottom:2px solid #B89B6A;padding-bottom:16px;margin-bottom:20px}" +
+    ".logo{height:60px;margin-bottom:8px}" +
+    ".np{font-size:22px;font-family:Georgia,serif;color:#B89B6A;margin:4px 0}" +
+    ".dados{background:#F7F3EE;border-radius:6px;padding:12px 16px;margin-bottom:20px;font-size:12px;line-height:1.8}" +
+    "table{width:100%;border-collapse:collapse}" +
+    "th{background:#1C1814;color:#D4B98A;padding:8px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}" +
+    ".tot{text-align:right;padding:12px 0;font-size:13px;font-weight:bold;border-top:2px solid #B89B6A;margin-top:8px}" +
+    "@media print{body{margin:0}}</style></head><body>" +
+    
+    "<div style='padding:16px;background:#1C1814;display:flex;gap:12px;justify-content:center;position:sticky;top:0;z-index:99'>" +
+    "<button onclick='window.close()' style='background:none;border:2px solid #D4B98A;color:#D4B98A;border-radius:6px;padding:12px 24px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent'>&#8592; Voltar</button>" +
+    "<button onclick='window.print()' style='background:#B89B6A;border:none;color:#1C1814;border-radius:6px;padding:12px 24px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-weight:700;-webkit-tap-highlight-color:transparent'>&#128196; Salvar PDF</button>" +
+    "</div>" +
+    "<div class='hd'>" + (logoSrc ? "<img src='" + logoSrc + "' class='logo'>" : "") +
+    "<div style='font-size:10px;letter-spacing:.2em;color:#9E8E7E;text-transform:uppercase'>Pedido de Compra</div>" +
+    "<div class='np'>" + numPedido + "</div>" +
+    "<div style='font-size:11px;color:#9E8E7E'>" + dataStr + "</div></div>" +
+    "<div class='dados'><strong style='color:#B89B6A'>Representante:</strong> " + (rep.n||"") + "<br>" +
+    "<strong style='color:#B89B6A'>CNPJ:</strong> " + cnpj + "<br>" +
+    "<strong style='color:#B89B6A'>Razão Social:</strong> " + razao + "<br>" +
+    "<strong style='color:#B89B6A'>Endereço:</strong> " + endereco + "</div>" +
+    "<table><thead><tr><th>Foto</th><th>Ref</th><th>Produto</th><th>Qtd</th></tr></thead><tbody>" +
+    itensHTML + "</tbody></table>" +
+    "<div class='tot'>Total: " + total + " unidades</div>" +
+    "</body></html>";
+
+  if (win) {
+    win.document.write(pdfHTML);
+    win.document.close();
+    win.onload = function(){ win.focus(); win.print(); };
+  }
+
+  var corpo = numPedido + " - " + razao + " (" + cnpj + ")\n" +
+    "Endereco: " + endereco + "\nRepresentante: " + (rep.n||"") + "\n\n" + itensStr + "\n\nTotal: " + total + " un";
+  // Envia e-mail
+  // Abre cliente de e-mail via link invisível
+  var mailLink = document.createElement("a");
+  mailLink.href = "mailto:pedidosmademoiselle@gmail.com?subject=" + encodeURIComponent("Pedido " + numPedido + " - " + razao) + "&body=" + encodeURIComponent(corpo);
+  mailLink.style.display = "none";
+  document.body.appendChild(mailLink);
+  setTimeout(function() {
+    mailLink.click();
+    document.body.removeChild(mailLink);
+  }, 2000);
+
+  carrinho = [];
+  fabAtualizar();
+  renderPedido();
+  mudarAba("b");
+  btn.textContent = "Gerar PDF e Enviar";
+  btn.disabled = false;
+}
+
+
+// BAIXAR PEDIDO — gera PDF direto sem modal de dados
+function baixarPedido() {
+  if (carrinho.length === 0) { alert("Nenhum item no pedido!"); return; }
+
+  var rep = JSON.parse(sessionStorage.getItem("rep")||"{}");
+  var agora = new Date();
+  var dataStr = agora.toLocaleDateString("pt-BR") + " " + agora.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  var total = carrinho.reduce(function(s,i){return s+i.qty;},0);
+  var logoSrc = "";
+  var logoEl = document.querySelector(".header-logo");
+  if (logoEl) logoSrc = logoEl.src;
+
+  var itensHTML = carrinho.map(function(item) {
+    return "<tr>" +
+      "<td style='padding:10px;border-bottom:1px solid #EDE6DC;text-align:center'><img src='" + item.link + "' style='width:70px;height:70px;object-fit:contain;border-radius:4px;background:#F7F3EE'></td>" +
+      "<td style='padding:10px;border-bottom:1px solid #EDE6DC;font-family:Georgia,serif;font-size:14px;color:#B89B6A;font-weight:bold;vertical-align:middle'>" + item.ref + "</td>" +
+      "<td style='padding:10px;border-bottom:1px solid #EDE6DC;font-size:11px;color:#6B5F52;vertical-align:middle'>" + item.nome + "</td>" +
+      "<td style='padding:10px;border-bottom:1px solid #EDE6DC;font-size:14px;text-align:center;font-weight:600;vertical-align:middle'>" + item.qty + " un</td>" +
+      "</tr>";
+  }).join("");
+
+  var pdfHTML = "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Pedido Mademoiselle</title>" +
+    "<style>" +
+    "body{font-family:Arial,sans-serif;margin:0;padding:24px;color:#1C1814;background:#fff}" +
+    ".hd{text-align:center;border-bottom:2px solid #B89B6A;padding-bottom:16px;margin-bottom:20px}" +
+
+    ".logo{height:55px;margin-bottom:8px}" +
+    ".sub{font-size:9px;letter-spacing:.2em;color:#9E8E7E;text-transform:uppercase}" +
+    ".info{background:#F7F3EE;border-radius:6px;padding:10px 16px;margin-bottom:18px;font-size:12px;line-height:1.9}" +
+    "table{width:100%;border-collapse:collapse}" +
+    "th{background:#1C1814;color:#D4B98A;padding:10px 8px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;text-align:left}" +
+    "th:last-child,td:last-child{text-align:center}" +
+    ".tot{text-align:right;padding:14px 0 0;font-size:13px;font-weight:bold;border-top:2px solid #B89B6A;margin-top:4px}" +
+    "@media print{body{padding:12px}}" +
+    "</style></head><body>" +
+    "<div style='padding:16px;background:#1C1814;display:flex;gap:12px;justify-content:center;position:sticky;top:0;z-index:99'>" +
+    "<button onclick='window.close()' style='background:none;border:2px solid #D4B98A;color:#D4B98A;border-radius:6px;padding:12px 24px;font-size:13px;cursor:pointer'>&#8592; Voltar</button>" +
+    "<button onclick='window.print()' style='background:#B89B6A;border:none;color:#1C1814;border-radius:6px;padding:12px 24px;font-size:13px;cursor:pointer;font-weight:700'>&#128196; Salvar PDF</button>" +
+    "</div>" +
+    "<div class='hd'>" +
+    (logoSrc ? "<img src='" + logoSrc + "' class='logo'>" : "<div style='font-family:Georgia,serif;font-size:22px;color:#B89B6A'>Mademoiselle Almofadas</div>") +
+    "<div class='sub'>Rascunho de Pedido</div>" +
+    "<div style='font-size:11px;color:#9E8E7E;margin-top:4px'>" + dataStr + " &nbsp;|&nbsp; " + (rep.n||"") + "</div>" +
+    "</div>" +
+    "<div class='info'>" +
+    "<strong style='color:#B89B6A'>Representante:</strong> " + (rep.n||"") + "</div>" +
+    "<table><thead><tr><th>Foto</th><th>Ref</th><th>Produto</th><th>Qtd</th></tr></thead>" +
+    "<tbody>" + itensHTML + "</tbody></table>" +
+    "<div class='tot'>Total: " + total + " unidades</div>" +
+    "</body></html>";
+
+  var win = window.open("","_blank");
+
+  if (win) {
+
+    win.document.write(pdfHTML);
+    win.document.close();
+    win.onload = function(){ win.focus(); win.print(); };
+  }
+}
+
+new IntersectionObserver(function(entries) {
+  if (entries[0].isIntersecting && galAtiva) carregarGaleria();
+}, {rootMargin: "200px"}).observe(document.getElementById("g-sentinel"));
+
+// lb-close usa onclick inline
+// lightbox usa onclick inline
+
+function abrirLB(item) {
+  lbItem = item;
+  lbQty = 1;
+  document.getElementById("lb-qty").textContent = "1";
+  document.getElementById("lb-img").src = item.link;
+  document.getElementById("lb-ref").textContent = item.ref;
+  document.getElementById("lb-nome").textContent = item.nome;
+  document.getElementById("lightbox").classList.add("open");
+}
+
+function fecharLB() {
+  document.getElementById("lightbox").classList.remove("open");
+  document.getElementById("lb-img").src = "";
+}
+</script>
+</body>
+</html>
