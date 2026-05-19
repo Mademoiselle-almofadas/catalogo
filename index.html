@@ -975,6 +975,54 @@ if (_logado) {
   carregarPlanilha();
 }
 
+
+// ── GALERIA ──
+let galeriaPagina = 0;
+const GALERIA_POR_PAG = 30;
+let galeriaCarregando = false;
+let galeriaAtiva = false;
+
+function mudarAba(aba) {
+  document.getElementById('aba-busca').classList.toggle('ativa', aba === 'busca');
+  document.getElementById('aba-galeria').classList.toggle('ativa', aba === 'galeria');
+  document.getElementById('busca-screen').classList.toggle('ativo', aba === 'busca');
+  document.getElementById('galeria-screen').classList.toggle('ativo', aba === 'galeria');
+  if (aba === 'galeria' && !galeriaAtiva) {
+    galeriaAtiva = true;
+    if (dados.length > 0) carregarGaleriaPagina();
+  }
+}
+
+function carregarGaleriaPagina() {
+  if (galeriaCarregando) return;
+  const inicio = galeriaPagina * GALERIA_POR_PAG;
+  if (inicio >= dados.length) {
+    document.getElementById('galeria-status').textContent = dados.length + ' produtos';
+    return;
+  }
+  galeriaCarregando = true;
+  const fatia = dados.slice(inicio, inicio + GALERIA_POR_PAG);
+  const grid = document.getElementById('galeria-grid');
+  fatia.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'galeria-item';
+    div.style.animationDelay = (i * 0.02) + 's';
+    div.innerHTML = '<div class="galeria-item-img"><img src="' + item.link + '" alt="' + item.ref + '" loading="lazy" onerror="this.style.display='none'"></div><div class="galeria-item-ref">' + item.ref + '</div>';
+    div.onclick = () => abrirLightbox(item);
+    grid.appendChild(div);
+  });
+  galeriaPagina++;
+  galeriaCarregando = false;
+  const restantes = dados.length - galeriaPagina * GALERIA_POR_PAG;
+  document.getElementById('galeria-status').textContent = restantes > 0 ? '' : dados.length + ' produtos';
+}
+
+const sentinel = document.getElementById('galeria-sentinel');
+const observer = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting && galeriaAtiva) carregarGaleriaPagina();
+}, { rootMargin: '200px' });
+observer.observe(sentinel);
+
 </script>
 
 <script>
