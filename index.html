@@ -157,7 +157,17 @@ header{background:var(--dark);padding:22px 24px 4px;text-align:center;position:s
 
 .card-img{position:relative}
 .g-img{position:relative}
-.btn-add{position:absolute;bottom:6px;right:6px;background:var(--dark);color:var(--gold-light);border:none;border-radius:50%;width:30px;height:30px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;line-height:1}
+.btn-add{position:absolute;bottom:6px;right:6px;background:var(--dark);color:var(--gold-light);border:none;border-radius:50%;width:30px;height:30px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:5;line-height:1;transition:transform .15s,box-shadow .15s}
+.btn-add:hover{transform:scale(1.08);box-shadow:0 4px 12px rgba(28,24,20,.25)}
+.btn-add.long-pressing{transform:scale(1.18);background:var(--gold)}
+
+/* Menu de quantidade rápida (popup ao long-press) */
+#qty-menu{position:fixed;display:none;background:var(--dark);border-radius:8px;padding:6px;box-shadow:0 8px 24px rgba(28,24,20,.4);z-index:600;gap:4px}
+#qty-menu.show{display:flex;animation:qtyMenuIn .15s ease-out}
+@keyframes qtyMenuIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+#qty-menu button{background:none;border:none;color:var(--gold-light);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;letter-spacing:.04em;padding:8px 12px;cursor:pointer;border-radius:6px;min-width:44px;transition:background .15s}
+#qty-menu button:hover,#qty-menu button:active{background:var(--gold);color:var(--dark)}
+#qty-menu .qty-label{color:var(--soft);font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:8px 6px 8px 10px;pointer-events:none}
 #fab{position:fixed;bottom:24px;right:20px;background:var(--dark);color:var(--gold-light);border:none;border-radius:50px;padding:12px 18px;font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:.15em;cursor:pointer;z-index:150;display:none;align-items:center;gap:8px;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 #fab.visivel{display:flex}
 #fab-n{background:var(--gold);color:var(--dark);border-radius:50%;width:20px;height:20px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
@@ -311,7 +321,7 @@ header{background:var(--dark);padding:22px 24px 4px;text-align:center;position:s
   <div class="search-wrap">
     <span class="search-label">Buscar por referência</span>
     <div class="search-row">
-      <input type="text" id="search-input" class="search-input" placeholder="076 / 9999 / NT38" autocapitalize="characters">
+      <input type="text" id="search-input" class="search-input" placeholder="Ref. ou descrição (ex: 9999, BORDADO)" autocapitalize="characters">
       <button class="search-btn" id="btn-buscar">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
       </button>
@@ -361,9 +371,10 @@ header{background:var(--dark);padding:22px 24px 4px;text-align:center;position:s
 <div id="pedido-screen">
   <div id="btn-voltar-orc" onclick="mudarAba('h')" style="display:none;padding:10px 16px;background:#F0E7D8;border-bottom:1px solid var(--gold);cursor:pointer;font-size:12px;color:var(--dark);font-weight:600;letter-spacing:.05em">← Voltar para Orçamentos</div>
   <div class="ped-header">
-    <div>
-      <div class="edit-eyebrow" style="margin-bottom:4px">Em Rascunho</div>
-      <div class="ped-titulo edit-title" style="font-size:28px"><em>Meu Pedido</em></div>
+    <div style="flex:1;min-width:0">
+      <div class="edit-eyebrow" id="ped-eyebrow" style="margin-bottom:4px">Em Rascunho</div>
+      <div class="ped-titulo edit-title" id="ped-titulo-h2" style="font-size:28px"><em>Meu Pedido</em></div>
+      <div id="ped-cliente-info" style="display:none;font-size:11px;color:var(--soft);margin-top:4px;letter-spacing:.04em"></div>
     </div>
     <div style="display:flex;gap:8px">
     <button class="ped-limpar" id="btn-limpar">Limpar tudo</button>
@@ -401,6 +412,15 @@ header{background:var(--dark);padding:22px 24px 4px;text-align:center;position:s
   </div>
 </div>
 
+
+<!-- Menu de quantidade rápida (aparece com tap-and-hold no botão +) -->
+<div id="qty-menu">
+  <span class="qty-label">Add</span>
+  <button data-qty="1">+1</button>
+  <button data-qty="5">+5</button>
+  <button data-qty="10">+10</button>
+  <button data-qty="12">+12</button>
+</div>
 
 <div id="processing-overlay">
   <div class="proc-spinner"></div>
@@ -643,20 +663,34 @@ function buscar() {
   var q = document.getElementById("search-input").value.trim();
   var grid = document.getElementById("grid");
   grid.innerHTML = "";
-  if (!q) { document.getElementById("status").textContent = "Digite uma referencia"; return; }
+  if (!q) { document.getElementById("status").textContent = "Digite uma referencia ou descricao"; return; }
   var qB = q.toUpperCase().replace(/R$/, "");
   var qN = parseInt(qB, 10) || null;
+  // Se o termo tem letras significativas (não é só número), busca também na descrição
+  var qTermo = q.toUpperCase();
+  var temLetras = /[A-Z]{3,}/.test(qTermo) && isNaN(parseInt(q, 10));
+
   var res = dados.filter(function(d) {
     var r = String(d.ref).toUpperCase().replace(/R$/, "");
     var m = String(d.nome).toUpperCase().split("-")[0].replace(/R$/, "");
-    if (qN !== null) return parseInt(r, 10) === qN || parseInt(m, 10) === qN;
-    return r === qB || m === qB;
+    // Match exato por número/ref
+    if (qN !== null) {
+      if (parseInt(r, 10) === qN || parseInt(m, 10) === qN) return true;
+    } else {
+      if (r === qB || m === qB) return true;
+    }
+    // Match por descrição (substring) — só se o termo tem letras
+    if (temLetras) {
+      var desc = String(d.desc || d.nome || "").toUpperCase();
+      if (desc.indexOf(qTermo) >= 0) return true;
+    }
+    return false;
   });
   document.getElementById("div-label").textContent = res.length + (res.length === 1 ? " variacao encontrada" : " variacoes encontradas");
   if (res.length === 0) {
     var el = document.createElement("div");
     el.className = "empty";
-    el.textContent = "Referencia nao encontrada";
+    el.textContent = "Nada encontrado para \"" + q + "\"";
     grid.appendChild(el);
     return;
   }
@@ -682,8 +716,8 @@ function buscar() {
     var bBtn = document.createElement("button");
     bBtn.className = "btn-add";
     bBtn.textContent = "+";
-    bBtn.setAttribute("aria-label", "Adicionar ao pedido");
-    bBtn.addEventListener("click", (function(it){ return function(e){ e.stopPropagation(); addItem(it,1); }; })(item));
+    bBtn.setAttribute("aria-label", "Adicionar ao pedido (segure para escolher quantidade)");
+    vincularBotaoAdd(bBtn, item);
     wrap.appendChild(bBtn);
     var info = document.createElement("div");
     info.className = "card-info";
@@ -741,7 +775,7 @@ function carregarGaleria() {
     var gBtn = document.createElement("button");
     gBtn.className = "btn-add";
     gBtn.textContent = "+";
-    gBtn.addEventListener("click", (function(it){ return function(e){ e.stopPropagation(); addItem(it,1); }; })(item));
+    vincularBotaoAdd(gBtn, item);
     wrap.appendChild(img);
     wrap.appendChild(gBtn);
     var ref = document.createElement("div");
@@ -1007,7 +1041,7 @@ function renderFiltrados() {
     var gBtn = document.createElement("button");
     gBtn.className = "btn-add";
     gBtn.textContent = "+";
-    gBtn.addEventListener("click", (function(it){ return function(e){ e.stopPropagation(); addItem(it,1); }; })(item));
+    vincularBotaoAdd(gBtn, item);
     wrap.appendChild(img);
     wrap.appendChild(gBtn);
     var ref = document.createElement("div");
@@ -1231,11 +1265,148 @@ function addItem(item, qty) {
   setTimeout(function(){ fab.style.background = "var(--dark)"; fab.style.color = "var(--gold-light)"; }, 500);
 }
 
+// Sistema de quantidade rápida: tap = +1, tap-and-hold = menu (+1/+5/+10/+12)
+var _qtyMenuItem = null;
+var _longPressTimer = null;
+var _longPressFired = false;
+
+function abrirMenuQty(btn, item) {
+  _qtyMenuItem = item;
+  _longPressFired = true;
+  btn.classList.add("long-pressing");
+  setTimeout(function(){ btn.classList.remove("long-pressing"); }, 200);
+  var menu = document.getElementById("qty-menu");
+  var rect = btn.getBoundingClientRect();
+  menu.classList.add("show");
+  // Posiciona acima ou abaixo dependendo do espaço
+  var menuRect = menu.getBoundingClientRect();
+  var top = rect.top - menuRect.height - 8;
+  if (top < 8) top = rect.bottom + 8;
+  var left = rect.right - menuRect.width;
+  if (left < 8) left = 8;
+  if (left + menuRect.width > window.innerWidth - 8) left = window.innerWidth - menuRect.width - 8;
+  menu.style.top = top + "px";
+  menu.style.left = left + "px";
+  // Haptic feedback sutil em dispositivos compatíveis
+  if (navigator.vibrate) try { navigator.vibrate(20); } catch(e) {}
+}
+
+function fecharMenuQty() {
+  document.getElementById("qty-menu").classList.remove("show");
+  _qtyMenuItem = null;
+}
+
+function vincularBotaoAdd(btn, item) {
+  btn.addEventListener("click", function(e){
+    e.stopPropagation();
+    if (_longPressFired) { _longPressFired = false; return; }
+    addItem(item, 1);
+  });
+  // Tap-and-hold: 500ms abre menu
+  var pressStart = function(e) {
+    _longPressFired = false;
+    clearTimeout(_longPressTimer);
+    _longPressTimer = setTimeout(function(){
+      abrirMenuQty(btn, item);
+    }, 500);
+  };
+  var pressEnd = function(e) {
+    clearTimeout(_longPressTimer);
+  };
+  btn.addEventListener("mousedown", pressStart);
+  btn.addEventListener("touchstart", pressStart, {passive:true});
+  btn.addEventListener("mouseup", pressEnd);
+  btn.addEventListener("mouseleave", pressEnd);
+  btn.addEventListener("touchend", pressEnd);
+  btn.addEventListener("touchcancel", pressEnd);
+  // Right-click no desktop também abre o menu
+  btn.addEventListener("contextmenu", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    abrirMenuQty(btn, item);
+  });
+}
+
+// Listeners globais do menu de qty (uma vez só)
+document.addEventListener("DOMContentLoaded", function(){
+  var menu = document.getElementById("qty-menu");
+  if (menu) {
+    menu.querySelectorAll("button[data-qty]").forEach(function(b){
+      b.addEventListener("click", function(e){
+        e.stopPropagation();
+        if (_qtyMenuItem) addItem(_qtyMenuItem, parseInt(b.dataset.qty, 10) || 1);
+        fecharMenuQty();
+      });
+    });
+  }
+  // Fecha menu ao clicar fora
+  document.addEventListener("click", function(e){
+    var menu = document.getElementById("qty-menu");
+    if (menu && menu.classList.contains("show") && !menu.contains(e.target) && !e.target.classList.contains("btn-add")) {
+      fecharMenuQty();
+    }
+  });
+  // Fecha menu ao rolar
+  window.addEventListener("scroll", fecharMenuQty, {passive:true});
+});
+
+// Compartilhar orçamento — usa Web Share nativo (mobile) ou WhatsApp (fallback)
+function compartilharOrc(codigo, link, cliente) {
+  var rep = JSON.parse(sessionStorage.getItem("rep")||"{}");
+  var nomeCliente = cliente ? cliente.trim() : "";
+  var texto = "Olá" + (nomeCliente ? ", " + nomeCliente : "") + "! Segue o orçamento *" + codigo + "* da Mademoiselle Almofadas:\n\n" + link + "\n\n_Atenciosamente, " + (rep.n || "Representante") + "_";
+
+  // Tenta Web Share API primeiro (iOS/Android modernos)
+  if (navigator.share) {
+    navigator.share({
+      title: "Orçamento " + codigo + " — Mademoiselle Almofadas",
+      text: texto
+    }).catch(function(){ /* usuário cancelou ou não suportado, fallback abaixo */
+      abrirWhatsApp(texto);
+    });
+  } else {
+    abrirWhatsApp(texto);
+  }
+}
+
+function abrirWhatsApp(texto) {
+  var url = "https://wa.me/?text=" + encodeURIComponent(texto);
+  window.open(url, "_blank");
+}
+
 function renderPedido() {
   var lista = document.getElementById("ped-lista");
   // Mostra botão "Voltar para Orçamentos" se estiver editando um orçamento existente
   var btnVoltar = document.getElementById("btn-voltar-orc");
   if (btnVoltar) btnVoltar.style.display = orcamentoAtivo ? "block" : "none";
+
+  // Atualiza eyebrow + título conforme o contexto (rascunho vs orçamento existente)
+  var eyebrowEl = document.getElementById("ped-eyebrow");
+  var tituloEl = document.getElementById("ped-titulo-h2");
+  var infoEl = document.getElementById("ped-cliente-info");
+  if (eyebrowEl && tituloEl && infoEl) {
+    if (orcamentoAtivo) {
+      eyebrowEl.textContent = "Editando · " + orcamentoAtivo;
+      // Mostra Razão Social como título principal se preenchida; senão, cai pra "Meu Pedido"
+      if (dadosCliente && dadosCliente.razao) {
+        tituloEl.innerHTML = "<em>" + dadosCliente.razao + "</em>";
+        // Mostra CNPJ como info secundária
+        var bits = [];
+        if (dadosCliente.cnpj) bits.push("CNPJ " + dadosCliente.cnpj);
+        if (dadosCliente.prazos) bits.push(dadosCliente.prazos);
+        infoEl.textContent = bits.join(" · ");
+        infoEl.style.display = bits.length > 0 ? "block" : "none";
+      } else {
+        tituloEl.innerHTML = "<em>Meu Pedido</em>";
+        infoEl.style.display = "none";
+      }
+    } else {
+      eyebrowEl.textContent = "Em Rascunho";
+      tituloEl.innerHTML = "<em>Meu Pedido</em>";
+      infoEl.style.display = "none";
+    }
+  }
+
   var totaisEl = document.getElementById("ped-totais");
   lista.innerHTML = "";
   if (carrinho.length === 0) {
@@ -1479,7 +1650,9 @@ function renderListaOrcs() {
       header.innerHTML =
         "<span>" + orc.codigo + " — " + formatarDataBR(orc.data, orc.hora) + "</span>" +
         "<span style='display:flex;gap:6px;flex-wrap:wrap'>" +
+          "<button onclick=\"compartilharOrc('" + orc.codigo + "','" + linkOrc + "','" + (orc.razao || "").replace(/'/g, "\\'") + "');\" style='background:#25D366;border:none;color:#fff;border-radius:4px;padding:4px 10px;font-size:10px;cursor:pointer;font-weight:600'>📱 Enviar</button>" +
           "<button onclick=\"navigator.clipboard.writeText(\'" + linkOrc + "\').then(function(){alert('Link copiado!')})\" style='background:none;border:1px solid var(--gold);color:var(--gold);border-radius:4px;padding:4px 10px;font-size:10px;cursor:pointer'>🔗 Link</button>" +
+          "<button onclick=\"duplicarOrc(\'" + orc.codigo + "\');\" style='background:none;border:1px solid var(--mid);color:var(--mid);border-radius:4px;padding:4px 10px;font-size:10px;cursor:pointer;font-weight:600'>⎘ Duplicar</button>" +
           (!isConcluido ? "<button onclick=\"carregarOrcParaEditar(\'" + orc.codigo + "\');\" style='background:var(--gold);border:none;color:#1C1814;border-radius:4px;padding:4px 10px;font-size:10px;cursor:pointer;font-weight:600'>✎ Editar</button>" : "") +
           (!isConcluido ? "<button onclick=\"concluirVendaDoOrc(\'" + orc.codigo + "\');\" style='background:#4A7C59;border:none;color:#fff;border-radius:4px;padding:4px 10px;font-size:10px;cursor:pointer;font-weight:600'>✓ Concluir Venda</button>" : "") +
           (!isConcluido ? "<button onclick=\"excluirOrc(\'" + orc.codigo + "\');\" style='background:none;border:1px solid #B85850;color:#B85850;border-radius:4px;padding:4px 10px;font-size:10px;cursor:pointer'>🗑 Excluir</button>" : "") +
@@ -1584,6 +1757,34 @@ function carregarOrcParaEditar(codigo) {
         mudarAba("p");
       }
     });
+}
+
+// Duplica os itens de um orçamento existente para um novo carrinho em branco
+// (sem dados de cliente — força o rep a preencher pro cliente novo)
+function duplicarOrc(codigo) {
+  if (carrinho.length > 0) {
+    if (!confirm("Já existe um pedido em andamento. Substituir pelos itens duplicados do " + codigo + "?")) return;
+  }
+  var API = "https://script.google.com/macros/s/AKfycbzIbYP6pSZpRF7N4xzawqV3PSItiaUrjdhwZkAVVA5E9BK_75VpSuY3AOXA1XdkxzCa/exec";
+  mostrarProcessing("Duplicando", "Carregando itens do " + codigo);
+  fetch(API, {method:"POST", body:JSON.stringify({acao:"carregarOrc", codigo:codigo})})
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      esconderProcessing();
+      if (data.ok && data.itens && data.itens.length > 0) {
+        // Copia só os itens — sem código, sem dados de cliente (cliente novo)
+        carrinho = data.itens.map(function(i){ return {ref:i.ref, nome:i.nome, link:i.link, qty:i.qty, desc:i.nome, ean:"", preco:i.preco||0, tamanho:i.tamanho||""}; });
+        orcamentoAtivo = null;
+        limparDadosCliente();
+        salvarCarrinho();
+        fabAtualizar();
+        mudarAba("p");
+        alert("Itens duplicados de " + codigo + "! Agora preencha os dados do cliente novo e gere o orçamento.");
+      } else {
+        alert("Não foi possível duplicar " + codigo + ". O orçamento parece vazio.");
+      }
+    })
+    .catch(function(){ esconderProcessing(); alert("Erro ao duplicar orçamento."); });
 }
 
 // Concluir Venda (botão da aba Pedido): se já tem dados, gera PDF direto; senão abre modal
@@ -2008,6 +2209,7 @@ function baixarPedidoOrc(codigo, link) {
     "<\/style><\/head><" + "body>" +
     "<div class='barra-acoes'>" +
     "<button onclick='window.close()' style='background:none;border:2px solid #D4B98A;color:#D4B98A;border-radius:6px;padding:12px 24px;font-size:13px;cursor:pointer'>&#8592; Voltar</button>" +
+     (link ? "<button onclick='var t=\"Ol\\u00e1! Segue o or\\u00e7amento *" + codigo + "* da Mademoiselle Almofadas:\\n\\n" + link + "\";window.open(\"https://wa.me/?text=\"+encodeURIComponent(t),\"_blank\")' style='background:#25D366;border:none;color:#fff;border-radius:6px;padding:12px 20px;font-size:13px;cursor:pointer;font-weight:600'>&#128241; WhatsApp</button>" : "") +
      (link ? "<button onclick='navigator.clipboard.writeText(\"" + link + "\").then(function(){alert(\"Link copiado!\");})' style='background:#4A7C59;border:none;color:#fff;border-radius:6px;padding:12px 20px;font-size:13px;cursor:pointer'>&#128279; Copiar Link</button>" : "") +
     "<button onclick='window.print()' style='background:#B89B6A;border:none;color:#1C1814;border-radius:6px;padding:12px 24px;font-size:13px;cursor:pointer;font-weight:700'>&#128196; Salvar PDF</button>" +
     "</div>" +
