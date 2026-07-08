@@ -5528,10 +5528,10 @@ function mostrarPDFPublico(codigo, itens, repNome, dataOrc, dadosCli) {
           : (String(descricao).trim() !== String(item.ref).trim() ? "<span class='prod-nome'>" + escapeHTML(descricao) + "</span>" : "")) +
         (ehCustom ? "<span class='prod-custom'>✨ Produto personalizado</span>" : "") +
         (item.tamanho ? "<span class='prod-tam'>" + escapeHTML(item.tamanho) + "</span>" : "") +
-        (!ehCustom && _descricaoDoItem(item) ? "<span style='font-size:11px;color:#6B5D4F;display:block;margin-top:3px;line-height:1.35'>" + escapeHTML(_descricaoDoItem(item)) + "</span>" : "") +
+        (!ehCustom && _descricaoDoItem(item) ? "<span style='font-size:18px;color:#2A2420;display:block;margin-top:4px;line-height:1.35'>" + escapeHTML(_descricaoDoItem(item)) + "</span>" : "") +
         (!ehCustom ? (_eanDoItem(item)
-            ? "<span style='font-size:10px;color:#9E8E7E;display:block;margin-top:2px'>EAN: " + escapeHTML(_eanDoItem(item)) + "</span>"
-            : "<span style='font-size:10px;color:#9E8E7E;display:block;margin-top:2px;font-style:italic'>Produto sem EAN</span>") : "") +
+            ? "<span style='font-size:16px;color:#3A322B;display:block;margin-top:3px'>EAN: " + escapeHTML(_eanDoItem(item)) + "</span>"
+            : "<span style='font-size:16px;color:#3A322B;display:block;margin-top:3px;font-style:italic'>Produto sem EAN</span>") : "") +
       "</td>" +
       "<td class='c-qty'>" + (Number(item.qty)||0) + " un<br><span class='qty-preco'>" + precoUn + "</span></td>" +
       "<td class='c-sub'>" + subtotal + "</td>" +
@@ -5554,23 +5554,23 @@ function mostrarPDFPublico(codigo, itens, repNome, dataOrc, dadosCli) {
     ".hd{text-align:center;border-bottom:2px solid #B89B6A;padding:24px;margin-bottom:20px;background:#fff;border-radius:10px}" +
     ".logo{height:90px;margin:0 auto 12px;display:block;max-width:90%;object-fit:contain}" +
     ".sub{font-size:10px;letter-spacing:.2em;color:#9E8E7E;text-transform:uppercase;margin-top:4px}" +
-    ".cod{font-size:13px;color:#B89B6A;font-weight:600;margin-top:8px;word-break:break-word}" +
-    ".info{background:#fff;border-radius:8px;padding:14px 18px;margin-bottom:18px;font-size:13px;line-height:1.9;word-break:break-word}" +
+    ".cod{font-size:18px;color:#8A6D3B;font-weight:700;margin-top:8px;word-break:break-word}" +
+    ".info{background:#fff;border-radius:8px;padding:14px 18px;margin-bottom:18px;font-size:18px;line-height:1.8;word-break:break-word}" +
     "table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;table-layout:fixed}" +
-    "th{background:#1C1814;color:#D4B98A;padding:8px 4px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;text-align:left}" +
+    "th{background:#1C1814;color:#D4B98A;padding:9px 5px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;text-align:left}" +
     "td{padding:8px 4px;border-bottom:1px solid #EDE6DC;vertical-align:middle;word-break:break-word}" +
     ".c-foto{text-align:center;width:220px;padding:8px}" +
     ".c-foto img{width:210px;height:210px;object-fit:contain;border-radius:6px;background:#fff;display:block;margin:0 auto;box-shadow:0 2px 6px rgba(28,24,20,.06);padding:6px;box-sizing:border-box}" +
     ".c-foto-custom{width:210px;height:210px;border-radius:6px;background:linear-gradient(135deg,#FAF5EB,#F0EDE8);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:60px;box-shadow:0 2px 6px rgba(28,24,20,.06);box-sizing:border-box;border:1px dashed #D4B98A}" +
-    ".prod-custom{display:inline-block;font-size:10px;color:#B89B6A;background:#FAF5EB;border:1px solid #E4D5B8;border-radius:12px;padding:2px 9px;margin-top:4px;letter-spacing:.04em;font-weight:600}" +
-    ".c-ref{font-size:13px;color:#1C1814;font-weight:700;text-align:center;white-space:nowrap;width:70px;letter-spacing:.02em}" +
-    ".c-prod{font-size:13px}" +
-    ".prod-nome{font-weight:600;color:#1C1814;display:block;line-height:1.3}" +
-    ".prod-tam{font-size:12px;color:#B89B6A;font-style:italic;display:block;margin-top:3px;letter-spacing:.02em}" +
-    ".c-qty{font-size:12px;text-align:center;width:78px;white-space:nowrap}" +
-    ".c-qty .qty-preco{color:#9E8E7E;font-size:11px}" +
-    ".c-sub{font-size:13px;text-align:center;font-weight:700;color:#1C1814;white-space:nowrap;width:90px}" +
-    ".tot{text-align:right;padding:14px 4px 0;font-size:14px;font-weight:bold;border-top:2px solid #B89B6A;margin-top:8px;word-break:break-word}" +
+    ".prod-custom{display:inline-block;font-size:15px;color:#8A6D3B;background:#FAF5EB;border:1px solid #E4D5B8;border-radius:12px;padding:3px 11px;margin-top:5px;letter-spacing:.04em;font-weight:700}" +
+    ".c-ref{font-size:21px;color:#1C1814;font-weight:700;text-align:center;white-space:nowrap;width:80px;letter-spacing:.02em}" +
+    ".c-prod{font-size:21px}" +
+    ".prod-nome{font-weight:700;color:#000;display:block;line-height:1.3;font-size:21px}" +
+    ".prod-tam{font-size:19px;color:#3A322B;font-style:italic;display:block;margin-top:4px;letter-spacing:.02em}" +
+    ".c-qty{font-size:18px;text-align:center;width:92px;white-space:nowrap}" +
+    ".c-qty .qty-preco{color:#3A322B;font-size:16px}" +
+    ".c-sub{font-size:21px;text-align:center;font-weight:700;color:#1C1814;white-space:nowrap;width:100px}" +
+    ".tot{text-align:right;padding:16px 4px 0;font-size:22px;font-weight:bold;border-top:2px solid #B89B6A;margin-top:8px;word-break:break-word}" +
     ".btn-print{display:block;margin:24px auto;background:#B89B6A;border:none;color:#1C1814;border-radius:6px;padding:14px 28px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.1em}" +
     /* MOBILE: tabela compacta, refs nunca quebram, fontes maiores no nome */
     "@media (max-width:480px){" +
@@ -7019,18 +7019,18 @@ async function gerarPDFeEnviar(cnpj, razao, endereco, prazos) {
       (ehCustom
         ? "<td style='padding:10px;border-bottom:1px solid #EDE6DC;text-align:center;vertical-align:middle'><div style='width:210px;height:210px;border-radius:6px;background:linear-gradient(135deg,#FAF5EB,#F0EDE8);display:inline-flex;align-items:center;justify-content:center;font-size:60px;border:1px dashed #D4B98A;box-sizing:border-box'>✨</div></td>"
         : "<td style='padding:10px;border-bottom:1px solid #EDE6DC;text-align:center;vertical-align:middle'><img src='" + escapeHTML(item.link) + "' style='width:210px;height:210px;object-fit:contain;border-radius:6px;background:#fff;box-shadow:0 2px 6px rgba(28,24,20,.06);padding:6px;box-sizing:border-box'></td>") +
-      "<td style='padding:8px;border-bottom:1px solid #EDE6DC;font-family:'Inter',sans-serif;font-size:14px;color:#1C1814;font-weight:700;letter-spacing:.02em;vertical-align:middle'>" + (ehCustom ? "" : escapeHTML(item.ref)) + "</td>" +
+      "<td style='padding:8px;border-bottom:1px solid #EDE6DC;font-family:'Inter',sans-serif;font-size:21px;color:#1C1814;font-weight:700;letter-spacing:.02em;vertical-align:middle'>" + (ehCustom ? "" : escapeHTML(item.ref)) + "</td>" +
       "<td style='padding:8px;border-bottom:1px solid #EDE6DC;vertical-align:middle'>" +
         (ehCustom
-          ? "<span style='font-size:12px;font-weight:600;color:#1C1814;display:block;line-height:1.3'>" + escapeHTML(item.ref) + "</span>"
-          : (String(descricao).trim() !== String(item.ref).trim() ? "<span style='font-size:12px;font-weight:600;color:#1C1814;display:block;line-height:1.3'>" + escapeHTML(descricao) + "</span>" : "")) +
-        (item.tamanho ? "<span style='font-size:12px;color:#B89B6A;font-style:italic;display:block;margin-top:3px;letter-spacing:.02em'>" + escapeHTML(item.tamanho) + "</span>" : "") +
-        (!ehCustom && _descricaoDoItem(item) ? "<span style='font-size:11px;color:#6B5D4F;display:block;margin-top:3px;line-height:1.35'>" + escapeHTML(_descricaoDoItem(item)) + "</span>" : "") +
+          ? "<span style='font-size:20px;font-weight:700;color:#000;display:block;line-height:1.3'>" + escapeHTML(item.ref) + "</span>"
+          : (String(descricao).trim() !== String(item.ref).trim() ? "<span style='font-size:20px;font-weight:700;color:#000;display:block;line-height:1.3'>" + escapeHTML(descricao) + "</span>" : "")) +
+        (item.tamanho ? "<span style='font-size:19px;color:#3A322B;font-style:italic;display:block;margin-top:4px;letter-spacing:.02em'>" + escapeHTML(item.tamanho) + "</span>" : "") +
+        (!ehCustom && _descricaoDoItem(item) ? "<span style='font-size:18px;color:#2A2420;display:block;margin-top:4px;line-height:1.35'>" + escapeHTML(_descricaoDoItem(item)) + "</span>" : "") +
         (ehCustom
           ? "<span style='font-size:10px;color:#B89B6A;display:block;margin-top:3px;font-style:italic'>✨ Produto personalizado</span>"
           : (eanNum
-              ? "<span style='font-size:10px;color:#9E8E7E;display:block;margin-top:2px'>EAN: " + escapeHTML(eanNum) + "</span>"
-              : "<span style='font-size:10px;color:#9E8E7E;display:block;margin-top:2px;font-style:italic'>Produto sem EAN</span>")) +
+              ? "<span style='font-size:16px;color:#3A322B;display:block;margin-top:3px'>EAN: " + escapeHTML(eanNum) + "</span>"
+              : "<span style='font-size:16px;color:#3A322B;display:block;margin-top:3px;font-style:italic'>Produto sem EAN</span>")) +
       "</td>" +
       "<td style='padding:8px;border-bottom:1px solid #EDE6DC;font-size:13px;text-align:center;font-weight:700;color:#1C1814;vertical-align:middle'>" + (Number(item.qty)||0) + " un</td>" +
       "<td style='padding:8px;border-bottom:1px solid #EDE6DC;font-size:11px;text-align:center;color:#6B5F52;vertical-align:middle'>" + (item.preco ? "R$ "+fmtBRL(item.preco) : "-") + "</td>" +
@@ -7172,18 +7172,18 @@ function baixarPedidoOrc(codigo, link) {
       (ehCustom
         ? "<td style='padding:10px;border-bottom:1px solid #EDE6DC;text-align:center;vertical-align:middle'><div style='width:210px;height:210px;border-radius:6px;background:linear-gradient(135deg,#FAF5EB,#F0EDE8);display:inline-flex;align-items:center;justify-content:center;font-size:60px;border:1px dashed #D4B98A;box-sizing:border-box'>✨</div></td>"
         : "<td style='padding:10px;border-bottom:1px solid #EDE6DC;text-align:center;vertical-align:middle'><img src='" + escapeHTML(item.link) + "' style='width:210px;height:210px;object-fit:contain;border-radius:6px;background:#fff;box-shadow:0 2px 6px rgba(28,24,20,.06);padding:6px;box-sizing:border-box'></td>") +
-      "<td style='padding:10px;border-bottom:1px solid #EDE6DC;font-family:'Inter',sans-serif;font-size:15px;color:#1C1814;font-weight:700;letter-spacing:.02em;vertical-align:middle'>" + (ehCustom ? "" : escapeHTML(item.ref)) + "</td>" +
+      "<td style='padding:10px;border-bottom:1px solid #EDE6DC;font-family:'Inter',sans-serif;font-size:21px;color:#1C1814;font-weight:700;letter-spacing:.02em;vertical-align:middle'>" + (ehCustom ? "" : escapeHTML(item.ref)) + "</td>" +
       "<td style='padding:10px;border-bottom:1px solid #EDE6DC;vertical-align:middle'>" +
         (ehCustom
-          ? "<span style='font-size:13px;font-weight:600;color:#1C1814;display:block;line-height:1.3'>" + escapeHTML(item.ref) + "</span>"
-          : (String(descricao).trim() !== String(item.ref).trim() ? "<span style='font-size:13px;font-weight:600;color:#1C1814;display:block;line-height:1.3'>" + escapeHTML(descricao) + "</span>" : "")) +
-        (item.tamanho ? "<span style='font-size:12px;color:#B89B6A;font-style:italic;display:block;margin-top:3px;letter-spacing:.02em'>" + escapeHTML(item.tamanho) + "</span>" : "") +
-        (!ehCustom && _descricaoDoItem(item) ? "<span style='font-size:11px;color:#6B5D4F;display:block;margin-top:3px;line-height:1.35'>" + escapeHTML(_descricaoDoItem(item)) + "</span>" : "") +
+          ? "<span style='font-size:20px;font-weight:700;color:#000;display:block;line-height:1.3'>" + escapeHTML(item.ref) + "</span>"
+          : (String(descricao).trim() !== String(item.ref).trim() ? "<span style='font-size:20px;font-weight:700;color:#000;display:block;line-height:1.3'>" + escapeHTML(descricao) + "</span>" : "")) +
+        (item.tamanho ? "<span style='font-size:19px;color:#3A322B;font-style:italic;display:block;margin-top:4px;letter-spacing:.02em'>" + escapeHTML(item.tamanho) + "</span>" : "") +
+        (!ehCustom && _descricaoDoItem(item) ? "<span style='font-size:18px;color:#2A2420;display:block;margin-top:4px;line-height:1.35'>" + escapeHTML(_descricaoDoItem(item)) + "</span>" : "") +
         (ehCustom
           ? "<span style='font-size:10px;color:#B89B6A;display:block;margin-top:3px;font-style:italic'>✨ Produto personalizado</span>"
           : (eanNum
-              ? "<span style='font-size:10px;color:#9E8E7E;display:block;margin-top:2px'>EAN: " + escapeHTML(eanNum) + "</span>"
-              : "<span style='font-size:10px;color:#9E8E7E;display:block;margin-top:2px;font-style:italic'>Produto sem EAN</span>")) +
+              ? "<span style='font-size:16px;color:#3A322B;display:block;margin-top:3px'>EAN: " + escapeHTML(eanNum) + "</span>"
+              : "<span style='font-size:16px;color:#3A322B;display:block;margin-top:3px;font-style:italic'>Produto sem EAN</span>")) +
       "</td>" +
       "<td style='padding:10px;border-bottom:1px solid #EDE6DC;font-size:14px;text-align:center;font-weight:700;color:#1C1814;vertical-align:middle'>" + (Number(item.qty)||0) + " un</td>" +
       "<td style='padding:10px;border-bottom:1px solid #EDE6DC;font-size:12px;text-align:center;color:#6B5F52;vertical-align:middle'>" + (item.preco ? "R$ "+fmtBRL(item.preco) : "-") + "</td>" +
