@@ -5655,7 +5655,12 @@ window.addEventListener("scroll", function() {
   }, 100);
 }, { passive: true });
 
-document.getElementById("btn-buscar").addEventListener("click", buscar);
+// A lupa faz o papel do Enter: busca E expulsa o teclado. Toque real de dedo
+// num botão fora do campo é o gesto que o Fire OS respeita pra recolher o IME.
+document.getElementById("btn-buscar").addEventListener("click", function() {
+  buscar();
+  fecharTecladoBusca();
+});
 // Fecha o teclado virtual de forma robusta. O teclado do Fire OS ignora blur()
 // simples — o truque é marcar o campo como readonly + inputmode="none" por um
 // instante: o sistema entende que não há onde digitar e recolhe o teclado.
