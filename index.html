@@ -3605,8 +3605,16 @@ if ("serviceWorker" in navigator) {
 // se o tablet mostrar versão antiga, o upload não pegou (ou a página não foi
 // recarregada) — não perca tempo procurando bug que já foi corrigido.
 // ─────────────────────────────────────────
-var APP_VERSAO = "2026.08.17-a";
+var APP_VERSAO = "2026.08.18-b";
 try { console.log("%cMademoiselle · app v" + APP_VERSAO, "color:#B89B6A;font-weight:700"); } catch(e) {}
+// O rótulo embaixo do login vinha ESCRITO À MÃO no HTML e ficava pra trás a cada
+// publicação — em 18/08 ele ainda dizia "v2026.08.06-c" com o fonte já na 08.17-a.
+// Como é por ele que se confere qual versão o tablet está rodando, um rótulo
+// mentiroso faz caçar bug já corrigido. Agora ele se escreve sozinho.
+try {
+  var _elVersao = document.getElementById("app-versao");
+  if (_elVersao) _elVersao.textContent = "v" + APP_VERSAO + " · feira";
+} catch(e) {}
 
 var SHEET_ID = "12D8u5zgYokftP_tEKnF1Dkw9zrfyUUJZED_v7DvFdI8";
 var USERS = [
@@ -3811,6 +3819,15 @@ function _limparSessaoPersistente() {
   try { localStorage.removeItem(SESSAO_PERSISTENTE_KEY); } catch(e) {}
 }
 
+// Roda fn agora, se o DOM já estiver montado, ou no DOMContentLoaded se o
+// parse ainda estiver em andamento. Necessário porque este <script> fica no
+// meio do arquivo: tudo que vem depois dele no HTML ainda não existe quando
+// o código de boot executa. Mesmo padrão do _setupModoFeira lá embaixo.
+function _quandoDomPronto(fn) {
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+  else fn();
+}
+
 function loginOk(rep) {
   sessionStorage.setItem("rep", JSON.stringify(rep));
   // Conta de cliente nunca é persistida (o link tem validade própria).
@@ -3819,8 +3836,21 @@ function loginOk(rep) {
 
   // Usuário de CONFERÊNCIA (mesa de separação): não vê as abas de vendedor.
   // Cai direto na tela de conferência em tela cheia; carrega só o catálogo.
+  //
+  // ⚠️ MOMENTO EM QUE ISTO RODA — mesma armadilha que já mordeu o Modo Feira
+  // (ver o comentário em _setupModoFeira, no fim deste <script>).
+  // O #conferencia-screen está na linha ~11050 do arquivo, depois que este
+  // bloco de script fecha.
+  // No login manual isso não aparece: o DOM já está pronto quando o operador
+  // clica em Entrar. Mas a restauração de sessão salva roda durante o parse,
+  // e aí getElementById devolve null — o _conferenciaAtivar sai calado no seu
+  // `if (!scr) return`, e o operador cai no app de vendedor em vez da tela de
+  // conferência. No tablet Fire, que mata o app em segundo plano o tempo todo,
+  // isso acontecia em toda reabertura.
   if (rep.conferencia === true) {
-    if (typeof _conferenciaAtivar === "function") _conferenciaAtivar();
+    _quandoDomPronto(function() {
+      if (typeof _conferenciaAtivar === "function") _conferenciaAtivar();
+    });
     carregarPlanilha();
     return;
   }
@@ -5330,9 +5360,19 @@ async function carregarPlanilha() {
        if (ref && link) dados.push({ref: ref, link: link, nome: nome, desc: desc, ean: ean, preco: preco, tamanho: tamanho, codigoExterno: codigoExterno, descricaoTif: descricaoTif});
     }
     clearTimeout(_demora);
-    document.getElementById("loading-screen").classList.add("hidden");
-    document.getElementById("status").textContent = dados.length + " fotos carregadas";
-    setTimeout(function() { document.getElementById("status").textContent = ""; }, 2500);
+    // Na tela de orçamento público estes elementos podem já não existir: se o
+    // link for inválido, mostrarOrcamentoPublico substitui o body inteiro pela
+    // mensagem de erro enquanto o catálogo ainda está carregando aqui. O
+    // setTimeout de 2,5s roda FORA do try/catch desta função, então sem o
+    // guarda ele estourava "Cannot set properties of null" no console.
+    var _telaLoad = document.getElementById("loading-screen");
+    if (_telaLoad) _telaLoad.classList.add("hidden");
+    var _elStatus = document.getElementById("status");
+    if (_elStatus) _elStatus.textContent = dados.length + " fotos carregadas";
+    setTimeout(function() {
+      var _s = document.getElementById("status");
+      if (_s) _s.textContent = "";
+    }, 2500);
     // Rep abriu um link de importação (?importar= do WhatsApp do cliente):
     // com o catálogo carregado, dá pra casar os códigos e popular o carrinho.
     if (typeof _processarImportacaoPendente === "function") {
